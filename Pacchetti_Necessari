@@ -26,3 +26,13 @@ install.packages(c("tidyverse", "readxl", "vegan", "betapart", "FD",
 # Importazione del file Excel
 # Pulizia dei dati -> sistemazione colonne
 # Impostazione della matrice species × plot
+
+# Carica i pacchetti
+library(tidyverse)
+library(readxl)
+library(vegan)
+library(betapart)
+library(FD)
+library(ggplot2)
+library(patchwork)
+library(pheatmap)
