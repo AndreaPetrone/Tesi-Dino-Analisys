@@ -1,0 +1,28 @@
+# Gestione e manipolazione dati
+install.packages("tidyverse")      # Include dplyr, tidyr, ggplot2, readr, tibble, etc.
+install.packages("readxl")         # Per leggere file Excel (.xlsx)
+
+# Analisi di diversità e composizione
+install.packages("vegan")          # α, β-diversità, Bray-Curtis, Jaccard, ordination, ecc.
+install.packages("betapart")       # Per analisi avanzate di β-diversità (turnover + nestedness)
+install.packages("FD")             # Per tratti funzionali (utile anche con forme biologiche)
+
+# Visualizzazione
+install.packages("ggplot2")        # Per grafici base e personalizzati
+install.packages("patchwork")      # Per combinare più grafici ggplot
+install.packages("pheatmap")       # Per heatmap di abbondanza o copertura
+
+#  Utili opzionali
+install.packages("janitor")        # Per pulizia tabelle
+install.packages("writexl")        # Per esportare dati in Excel
+install.packages("reshape2")       # Per ristrutturare i dati (wide <-> long)
+
+# Esempio per installare tutti insieme
+install.packages(c("tidyverse", "readxl", "vegan", "betapart", "FD",
+                   "ggplot2", "patchwork", "pheatmap", 
+                   "janitor", "writexl", "reshape2"))
+
+# Quando hai installato tutto e vuoi iniziare, ti consiglio di partire da:
+# Importazione del file Excel
+# Pulizia dei dati -> sistemazione colonne
+# Impostazione della matrice species × plot
