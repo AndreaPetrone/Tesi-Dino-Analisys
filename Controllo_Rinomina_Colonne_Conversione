@@ -1,0 +1,28 @@
+# Leggi le prime due righe (header)
+header1 <- read_excel("Dino uniformato (survey e resurvey) 1 AC sistemato FS-VB.xlsx", range = "A1:AZ1", col_names = FALSE)
+header2 <- read_excel("Dino uniformato (survey e resurvey) 1 AC sistemato FS-VB.xlsx", range = "A2:AZ2", col_names = FALSE)
+
+# Unisci le due righe per creare i veri nomi delle colonne
+new_names <- paste0(as.character(header2[1,]), "_", as.character(header1[1,]))
+new_names <- make.unique(new_names)  # Rende tutti i nomi univoci, la funzione make.unique() aggiunge un suffisso .1, .2, ecc. in automatico se ci sono duplicati.
+new_names[1:2] <- c("Famiglia", "Specie")
+
+# Applica i nuovi nomi alle colonne
+colnames(dino_raw) <- new_names
+
+# Funzione per trasformare i valori in numeri
+converti_valore <- function(x) {
+  suppressWarnings(  # evita messaggi per ogni coercizione
+    case_when(
+      x == "r" ~ 0.2,
+      x == "+" ~ 0.5,
+      x == "" | is.na(x) ~ 0,
+      grepl("^[0-9.]+$", x) ~ as.numeric(x),
+      TRUE ~ NA_real_
+    )
+  )
+}
+
+# Applichiamo la conversione a tutte le colonne tranne "Famiglia" e "Specie"
+dati_convertiti <- dino_raw %>%
+  mutate(across(-c(Famiglia, Specie), ~ converti_valore(as.character(.))))
