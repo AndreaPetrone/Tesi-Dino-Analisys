@@ -1,3 +1,6 @@
+# Sostituisci il percorso con quello reale, se non sei nella stessa directory del file
+dino_raw <- read_excel("Dino uniformato (survey e resurvey) 1 AC sistemato FS-VB.xlsx", skip = 2)
+
 # Leggi le prime due righe (header)
 header1 <- read_excel("Dino uniformato (survey e resurvey) 1 AC sistemato FS-VB.xlsx", range = "A1:AZ1", col_names = FALSE)
 header2 <- read_excel("Dino uniformato (survey e resurvey) 1 AC sistemato FS-VB.xlsx", range = "A2:AZ2", col_names = FALSE)
