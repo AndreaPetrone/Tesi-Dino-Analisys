@@ -29,3 +29,4 @@ converti_valore <- function(x) {
 # Applichiamo la conversione a tutte le colonne tranne "Famiglia" e "Specie"
 dati_convertiti <- dino_raw %>%
   mutate(across(-c(Famiglia, Specie), ~ converti_valore(as.character(.))))
+
