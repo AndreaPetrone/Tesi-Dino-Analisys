@@ -1,0 +1,17 @@
+# Isoliamo solo le colonne con dati numerici per i plot
+matrice_specie_plot <- dati_convertiti %>%
+  select(-Famiglia, -Specie) %>%
+  as.matrix()  # Serve formato matrice per vegan
+rownames(matrice_specie_plot) <- dati_convertiti$Specie
+
+matrice_specie_plot # per visualizzarla tutta
+head(matrice_specie_plot)       # prime 6 righe, tutte le colonne
+matrice_specie_plot[1:10, 1:5]  # prime 10 righe e prime 5 colonne
+View(matrice_specie_plot) # tabella più comoda
+
+# Perché è importante avere una matrice così?
+# Perché tutte le funzioni ecologiche in R richiedono questo formato:
+# vegdist(matrice_specie_plot, method = "bray") → Bray-Curtis
+# diversity(matrice_specie_plot) → diversità alpha
+# betadiver() → beta-diversità
+# rda(), nmds() → ordinamenti
