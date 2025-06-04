@@ -1,0 +1,14 @@
+colnames(matrice_specie_plot) # per controllare che i nomi delle colonne siano scritti esattamente come nel file excel
+# Plot 1: S1 vs R1
+P1 <- matrice_specie_plot[, c("S_1", "R_1")]
+
+# Plot 2: S2 vs R2
+P2 <- matrice_specie_plot[, c("S_2", "R_2")]
+
+# Plot 3: S.1.1 vs R.1.1a, b, c
+P3 <- matrice_specie_plot[, c("S_1.1", "R_1.1a", "R_1.1b", "R_1.1c")]
+
+# Plot 4: S12 vs R12a, b, c
+P4 <- matrice_specie_plot[, c("S12", "R12a", "R12b", "R12c")]
+
+AGGIUNGI PLOT RIMANENTI CONFRONTANDO CON MATRICE_SPECIE_PLOT
