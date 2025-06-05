@@ -1,8 +1,12 @@
-# Isoliamo solo le colonne con dati numerici per i plot
+# Analisi dello script - isoliamo solo le colonne con dati numerici per i plot
 matrice_specie_plot <- dati_convertiti %>%
-  select(-Famiglia, -Specie) %>%
-  as.matrix()  # Serve formato matrice per vegan
+  select(-Famiglia, -Specie) %>%  # esclude colonne descrittive
+  as.matrix()                     # converte in matrice numerica
 rownames(matrice_specie_plot) <- dati_convertiti$Specie
+
+🔸 select(-Famiglia, -Specie) → toglie le colonne non numeriche
+🔸 as.matrix() → crea una matrice numerica, come richiesto da molti pacchetti ecologici
+🔸 rownames(...) <- → assegna le specie come nomi di riga
 
 matrice_specie_plot # per visualizzarla tutta
 head(matrice_specie_plot)       # prime 6 righe, tutte le colonne
@@ -15,14 +19,5 @@ View(matrice_specie_plot) # tabella più comoda
 # diversity(matrice_specie_plot) → diversità alpha
 # betadiver() → beta-diversità
 # rda(), nmds() → ordinamenti
-
-# Analisi dello script
-matrice_specie_plot <- dati_convertiti %>%
-  select(-Famiglia, -Specie) %>%  # esclude colonne descrittive
-  as.matrix()                     # converte in matrice numerica
-rownames(matrice_specie_plot) <- dati_convertiti$Specie
-🔸 select(-Famiglia, -Specie) → toglie le colonne non numeriche
-🔸 as.matrix() → crea una matrice numerica, come richiesto da molti pacchetti ecologici
-🔸 rownames(...) <- → assegna le specie come nomi di riga
 
 matrice_specie_plot # visualizzi 
