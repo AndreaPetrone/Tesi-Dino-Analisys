@@ -1,0 +1,39 @@
+colnames(matrice_specie_plot) # per controllare che i nomi delle colonne siano scritti esattamente come nel file excel
+
+# Plot 1: S1 vs R1
+P1 <- matrice_specie_plot[, c("S_1", "R_1")]
+
+# Plot 2: S2 vs R2
+P2 <- matrice_specie_plot[, c("S_2", "R_2")]
+
+# Plot 1.1: S1.1 vs R1.1a, b, c
+P1.1 <- matrice_specie_plot[, c("S_1.1", "R_1.1a", "R_1.1b", "R_1.1c")]
+
+# Plot 1.2: S1.2 vs R1.2a, b, c
+P1.2 <- matrice_specie_plot[, c("S_1.2", "R_1.2a", "R_1.2b", "R_1.2c")]
+
+# Plot 1.3: S1.3 vs R1.3a, b, c
+P1.3 <- matrice_specie_plot[, c("S_1.3", "R_1.3a", "R_1.3b", "R_1.3c")]
+
+# Plot 2.1: S2.1 vs R2.1a, b, c
+P2.1 <- matrice_specie_plot[, c("S_2.1", "R_2.1a", "R_2.1b", "R_2.1c")]
+
+# Plot 2.2: S2.2 vs R2.2a, b, c
+P2.2 <- matrice_specie_plot[, c("S_2.2", "R_2.2a", "R_2.2b", "R_2.2c")]
+
+# Plot 2.3: S2.3 vs R2.3a, b, c
+P2.3 <- matrice_specie_plot[, c("S_2.3", "R_2.3a", "R_2.3b", "R_2.3c")]
+
+# Plot 3.1: S3.1 vs R3.1a, b, c
+P3.1 <- matrice_specie_plot[, c("S_3.1", "R_3.1a", "R_3.1b", "R_3.1c")]
+
+# Plot 3.2: S3.2 vs R3.2
+P3.2 <- matrice_specie_plot[, c("S_3.2", "R_3.2")]
+
+# Plot 3.3: S3.3 vs R3.3
+P3.3 <- matrice_specie_plot[, c("S_3.3", "R_3.3")]
+
+# Plot 12: S12 vs R12a, b, c
+P12 <- matrice_specie_plot[, c("S_12", "R_12a", "R_12b", "R_12c")]
+
+
