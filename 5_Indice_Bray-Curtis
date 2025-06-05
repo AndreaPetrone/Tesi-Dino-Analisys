@@ -1,0 +1,73 @@
+# Gli indici di somiglianza (come Bray-Curtis) servono per misurare quanto un resurvey è simile al suo survey originario.
+  Quindi:
+- Se vuoi applicare l’approccio conservativo, devi prima calcolare gli indici di somiglianza tra ogni survey e i vari resurvey.
+- Poi scegli il resurvey più simile (cioè con la somiglianza più alta → distanza minore).
+- Dopo di ciò, con solo survey e resurvey selezionati, calcoli alpha, beta e gamma.
+
+library(vegan)
+
+# Plot 1
+P1 <- matrice_specie_plot[, c("S_1", "R_1")] # estrai la sotto matrice
+bray_P1 <- vegdist(t(P1), method = "bray") # calcolo la distanza di Bray-Curtis
+bray_P1
+          S_1
+R_1 0.3134328
+
+dissimilarity_percent <- bray_P1[1] * 100
+similarity_percent <- (1 - bray_P1[1]) * 100
+dissimilarity_percent
+  31.34328
+similarity_percent
+  68.65672
+
+# Plot 2
+P2 <- matrice_specie_plot[, c("S_2", "R_2")]
+bray_P2 <- vegdist(t(P2), method = "bray")
+bray_P2
+
+# Plot 1.1
+P1.1 <- matrice_specie_plot[, c("S_1.1", "R_1.1a", "R_1.1b", "R_1.1c")]
+bray_P1.1 <- vegdist(t(P1.1), method = "bray")
+bray_P1.1
+
+# Plot 1.2
+P1.2 <- matrice_specie_plot[, c("S_1.2", "R_1.2a", "R_1.2b", "R_1.2c")]
+bray_P1.2 <- vegdist(t(P1.2), method = "bray")
+bray_P1.2
+
+# Plot 1.3
+P1.3 <- matrice_specie_plot[, c("S_1.3", "R_1.3a", "R_1.3b", "R_1.3c")]
+bray_P1.3 <- vegdist(t(P1.3), method = "bray")
+bray_P1.3
+
+# Plot 2.1
+P2.1 <- matrice_specie_plot[, c("S_2.1", "R_2.1a", "R_2.1b", "R_2.1c")]
+bray_P2.1 <- vegdist(t(P2.1), method = "bray")
+bray_P2.1
+
+# Plot 2.2
+P2.2 <- matrice_specie_plot[, c("S_2.2", "R_2.2a", "R_2.2b", "R_2.2c")]
+bray_P2.2 <- vegdist(t(P2.2), method = "bray")
+bray_P2.2
+
+# Plot 2.3
+P2.3 <- matrice_specie_plot[, c("S_2.3", "R_2.3a", "R_2.3b", "R_2.3c")]
+bray_P2.3 <- vegdist(t(P2.3), method = "bray")
+
+# Plot 3.1
+P3.1 <- matrice_specie_plot[, c("S_3.1", "R_3.1a", "R_3.1b", "R_3.1c")]
+bray_P3.1 <- vegdist(t(P3.1), method = "bray")
+
+# Plot 3.2 (1 solo resurvey)
+P3.2 <- matrice_specie_plot[, c("S_3.2", "R_3.2")]
+bray_P3.2 <- vegdist(t(P3.2), method = "bray")
+
+# Plot 3.3 (1 solo resurvey)
+P3.3 <- matrice_specie_plot[, c("S_3.3", "R_3.3")]
+bray_P3.3 <- vegdist(t(P3.3), method = "bray")
+
+# Plot 12
+P12 <- matrice_specie_plot[, c("S_12", "R_12a", "R_12b", "R_12c")]
+bray_P12 <- vegdist(t(P12), method = "bray")
+
+
