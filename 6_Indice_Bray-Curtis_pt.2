@@ -1,0 +1,19 @@
+# Plot 3.1
+P3.1 <- matrice_specie_plot[, c("S_3.1", "R_3.1a", "R_3.1b", "R_3.1c")]
+bray_P3.1 <- vegdist(t(P3.1), method = "bray")
+bray_P3.1
+
+# Plot 3.2 (1 solo resurvey)
+P3.2 <- matrice_specie_plot[, c("S_3.2", "R_3.2")]
+bray_P3.2 <- vegdist(t(P3.2), method = "bray")
+bray_P3.2
+
+# Plot 3.3 (1 solo resurvey)
+P3.3 <- matrice_specie_plot[, c("S_3.3", "R_3.3")]
+bray_P3.3 <- vegdist(t(P3.3), method = "bray")
+bray_P3.3
+
+# Plot 12
+P12 <- matrice_specie_plot[, c("S_12", "R_12a", "R_12b", "R_12c")]
+bray_P12 <- vegdist(t(P12), method = "bray")
+bray_P12
