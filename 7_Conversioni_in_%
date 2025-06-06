@@ -1,1 +1,93 @@
+# Calcolo percentuale dissimilarità e similarità per P1
+diss_R1 <- bray_P1[1] * 100 # la R è l'abbreviazione del "Resurvey"
+sim_R1  <- (1 - bray_P1[1]) * 100
 
+# Visualizza i risultati
+diss_R1
+[1] 31.34328
+sim_R1
+[1] 68.65672
+
+# P2
+diss_R2 <- bray_P2[1] * 100 
+sim_R2  <- (1 - bray_P2[1]) * 100
+diss_R2
+[1] 21.34831
+sim_R2
+[1] 78.65169
+
+# Calcolo percentuali per ogni replica del plot P1.1
+diss_R1.1a <- bray_P1.1_matrix["S_1.1", "R_1.1a"] * 100 # dissimilarità tra S_1.1 e R_1.1a (quindi quanto è diverso R_1.1a rispetto a S_1.1).
+sim_R1.1a  <- (1 - bray_P1.1_matrix["S_1.1", "R_1.1a"]) * 100
+diss_R1.1a; sim_R1.1a # Visualizza i risultati
+[1] 82.18623 # dissimilarità
+[1] 17.81377 # similarità
+
+diss_R1.1b <- bray_P1.1_matrix["S_1.1", "R_1.1b"] * 100
+sim_R1.1b  <- (1 - bray_P1.1_matrix["S_1.1", "R_1.1b"]) * 100
+diss_R1.1b; sim_R1.1b
+[1] 75.96154
+[1] 24.03846
+
+diss_R1.1c <- bray_P1.1_matrix["S_1.1", "R_1.1c"] * 100
+sim_R1.1c  <- (1 - bray_P1.1_matrix["S_1.1", "R_1.1c"]) * 100
+diss_R1.1c; sim_R1.1c
+[1] 66.92913
+[1] 33.07087
+
+# P1.2
+diss_R1.2a <- bray_P1.2_matrix["S_1.2", "R_1.2a"] * 100
+sim_R1.2a  <- (1 - bray_P1.2_matrix["S_1.2", "R_1.2a"]) * 100
+diss_R1.2a; sim_R1.2a
+[1] 64.70588
+[1] 35.29412
+
+diss_R1.2b <- bray_P1.2_matrix["S_1.2", "R_1.2b"] * 100
+sim_R1.2b  <- (1 - bray_P1.2_matrix["S_1.2", "R_1.2b"]) * 100
+diss_R1.2b; sim_R1.2b
+[1] 57.74648
+[1] 42.25352
+
+diss_R1.2c <- bray_P1.2_matrix["S_1.2", "R_1.2c"] * 100
+sim_R1.2c  <- (1 - bray_P1.2_matrix["S_1.2", "R_1.2c"]) * 100
+diss_R1.2c; sim_R1.2c
+[1] 63.89892
+[1] 36.10108
+
+# P1.3
+diss_R1.3a <- bray_P1.3_matrix["S_1.3", "R_1.3a"] * 100
+sim_R1.3a  <- (1 - bray_P1.3_matrix["S_1.3", "R_1.3a"]) * 100
+diss_R1.3a; sim_R1.3a
+[1] 75.09158
+[1] 24.90842
+
+diss_R1.3b <- bray_P1.3_matrix["S_1.3", "R_1.3b"] * 100
+sim_R1.3b  <- (1 - bray_P1.3_matrix["S_1.3", "R_1.3b"]) * 100
+diss_R1.3b; sim_R1.3b
+[1] 62.96296
+[1] 37.03704
+
+diss_R1.3c <- bray_P1.3_matrix["S_1.3", "R_1.3c"] * 100
+sim_R1.3c  <- (1 - bray_P1.3_matrix["S_1.3", "R_1.3c"]) * 100
+diss_R1.3c; sim_R1.3c
+[1] 66.06498
+[1] 33.93502
+
+# P2.1
+diss_R2.1a <- bray_P2.1_matrix["S_2.1", "R_2.1a"] * 100
+sim_R2.1a  <- (1 - bray_P2.1_matrix["S_2.1", "R_2.1a"]) * 100
+diss_R2.1a; sim_R2.1a
+[1] 85.91549
+[1] 14.08451
+
+diss_R2.1b <- bray_P2.1_matrix["S_2.1", "R_2.1b"] * 100
+sim_R2.1b  <- (1 - bray_P2.1_matrix["S_2.1", "R_2.1b"]) * 100
+diss_R2.1b; sim_R2.1b
+[1] 65.63574
+[1] 34.36426
+
+diss_R2.1c <- bray_P2.1_matrix["S_2.1", "R_2.1c"] * 100
+sim_R2.1c  <- (1 - bray_P2.1_matrix["S_2.1", "R_2.1c"]) * 100
+diss_R2.1c; sim_R2.1c
+[1] 74.4186
+[1] 25.5814
