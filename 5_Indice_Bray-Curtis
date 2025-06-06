@@ -29,8 +29,8 @@ R_1.1a 0.8218623
 R_1.1b 0.7596154 0.5804878          
 R_1.1c 0.6692913 0.5537849 0.5188679
 
-bray_P1.1_matrix <- as.matrix(bray_P1.1) # calcolo distanza 
-# Estrai solo i confronti S vs R
+bray_P1.1_matrix <- as.matrix(bray_P1.1) # calcolo distanza, il risultato sarà una matrice
+# Estrai solo i confronti S vs R dalla matrice direttamente
 bray_P1.1_matrix["S_1.1", "R_1.1a"]
 [1] 0.8218623
 bray_P1.1_matrix["S_1.1", "R_1.1b"]
@@ -76,16 +76,52 @@ bray_P1.3_matrix["S_1.3", "R_1.3c"]
 P2.1 <- matrice_specie_plot[, c("S_2.1", "R_2.1a", "R_2.1b", "R_2.1c")]
 bray_P2.1 <- vegdist(t(P2.1), method = "bray")
 bray_P2.1
+           S_2.1    R_2.1a    R_2.1b
+R_2.1a 0.8591549                    
+R_2.1b 0.6563574 0.6701754          
+R_2.1c 0.7441860 0.5443787 0.4376812
+
+bray_P2.1_matrix <- as.matrix(bray_P2.1)
+bray_P2.1_matrix["S_2.1", "R_2.1a"] 
+[1] 0.8591549
+bray_P2.1_matrix["S_2.1", "R_2.1b"]
+[1] 0.6563574
+bray_P2.1_matrix["S_2.1", "R_2.1c"]
+[1] 0.744186
 
 # Plot 2.2
 P2.2 <- matrice_specie_plot[, c("S_2.2", "R_2.2a", "R_2.2b", "R_2.2c")]
 bray_P2.2 <- vegdist(t(P2.2), method = "bray")
 bray_P2.2
+           S_2.2    R_2.2a    R_2.2b
+R_2.2a 0.6137072                    
+R_2.2b 0.7062937 0.3108614          
+R_2.2c 0.7027027 0.2707581 0.3884298
+
+bray_P2.2_matrix <- as.matrix(bray_P2.2)
+bray_P2.2_matrix["S_2.2", "R_2.2a"] 
+[1] 0.6137072
+bray_P2.2_matrix["S_2.2", "R_2.2b"]
+[1] 0.7062937
+bray_P2.2_matrix["S_2.2", "R_2.2c"]
+[1] 0.7027027
 
 # Plot 2.3
 P2.3 <- matrice_specie_plot[, c("S_2.3", "R_2.3a", "R_2.3b", "R_2.3c")]
 bray_P2.3 <- vegdist(t(P2.3), method = "bray")
 bray_P2.3
+           S_2.3    R_2.3a    R_2.3b
+R_2.3a 0.8161765                    
+R_2.3b 0.6498054 0.5815900          
+R_2.3c 0.7403509 0.3632959 0.4682540
+
+bray_P2.3_matrix <- as.matrix(bray_P2.3)
+bray_P2.3_matrix["S_2.3", "R_2.3a"] 
+[1] 0.8161765
+bray_P2.3_matrix["S_2.3", "R_2.3b"]
+[1] 0.6498054
+bray_P2.3_matrix["S_2.3", "R_2.3c"]
+[1] 0.7403509
 
 # Plot 3.1
 P3.1 <- matrice_specie_plot[, c("S_3.1", "R_3.1a", "R_3.1b", "R_3.1c")]
