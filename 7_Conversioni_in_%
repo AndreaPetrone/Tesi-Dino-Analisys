@@ -91,3 +91,41 @@ sim_R2.1c  <- (1 - bray_P2.1_matrix["S_2.1", "R_2.1c"]) * 100
 diss_R2.1c; sim_R2.1c
 [1] 74.4186
 [1] 25.5814
+
+# P2.2
+diss_R2.2a <- bray_P2.2_matrix["S_2.2", "R_2.2a"] * 100
+sim_R2.2a  <- (1 - bray_P2.2_matrix["S_2.2", "R_2.2a"]) * 100
+diss_R2.2a; sim_R2.2a
+[1] 61.37072
+[1] 38.62928
+
+diss_R2.2b <- bray_P2.2_matrix["S_2.2", "R_2.2b"] * 100
+sim_R2.2b  <- (1 - bray_P2.2_matrix["S_2.2", "R_2.2b"]) * 100
+diss_R2.2b; sim_R2.2b
+[1] 70.62937
+[1] 29.37063
+
+diss_R2.2c <- bray_P2.2_matrix["S_2.2", "R_2.2c"] * 100
+sim_R2.2c  <- (1 - bray_P2.2_matrix["S_2.2", "R_2.2c"]) * 100
+diss_R2.2c; sim_R2.2c
+[1] 70.27027
+[1] 29.72973
+
+# P2.3
+diss_R2.3a <- bray_P2.3_matrix["S_2.3", "R_2.3a"] * 100
+sim_R2.3a  <- (1 - bray_P2.3_matrix["S_2.3", "R_2.3a"]) * 100
+diss_R2.3a; sim_R2.3a
+[1] 81.61765
+[1] 18.38235
+
+diss_R2.3b <- bray_P2.3_matrix["S_2.3", "R_2.3b"] * 100
+sim_R2.3b  <- (1 - bray_P2.3_matrix["S_2.3", "R_2.3b"]) * 100
+diss_R2.3b; sim_R2.3b
+[1] 64.98054
+[1] 35.01946
+
+diss_R2.3c <- bray_P2.3_matrix["S_2.3", "R_2.3c"] * 100
+sim_R2.3c  <- (1 - bray_P2.3_matrix["S_2.3", "R_2.3c"]) * 100
+diss_R2.3c; sim_R2.3c
+[1] 74.03509
+[1] 25.96491
