@@ -1,0 +1,72 @@
+# Obiettivo: costruire un dataset definitivo da cui calcolare alpha, beta, gamma diversità
+# Approccio conservativo (1 solo resurvey per plot)
+# Per ogni plot (P1.2, P2.1, P3.1, ecc.), selezioni solo la replica del resurvey che è più simile al survey originario.
+# Usi solo quella per il confronto tra S (survey) e R (resurvey).
+# Come fare (es. P1.2):
+# Hai tre dissimilarità:
+# R_1.2a: 64.70%
+  R_1.2b: 57.75% ✅ → la più simile
+  R_1.2c: 63.90%
+# Quindi scegli R_1.2b e costruisci un nuovo dataset con le sole colonne "S_1.2" e "R_1.2b".
+P1.2_conservativo <- matrice_specie_plot[, c("S_1.2", "R_1.2b")]
+# Fai lo stesso per ogni plot.
+
+# SCELTA DEL PLOT PIU' DIS-SIMILE 
+
+# P1
+diss_R1; 
+[1] 31.34328
+
+# P2
+diss_R2; 
+[1] 21.34831
+
+# P1.1
+diss_R1.1c; sim_R1.1c
+[1] 66.92913
+[1] 33.07087
+
+# P1.2
+diss_R1.2b; sim_R1.2b
+[1] 57.74648
+[1] 42.25352
+
+# P1.3
+diss_R1.3b; sim_R1.3b
+[1] 62.96296
+[1] 37.03704
+
+# P2.1
+diss_R2.1b; sim_R2.1b
+[1] 65.63574
+[1] 34.36426
+
+# P2.2
+diss_R2.2a; sim_R2.2a
+[1] 61.37072
+[1] 38.62928
+
+# P2.3
+diss_R2.3b; sim_R2.3b
+[1] 64.98054
+[1] 35.01946
+
+# P3.1
+diss_R3.1a; sim_R3.1a
+[1] 81.6092
+[1] 18.3908
+
+# P3.2
+diss_R3.2; sim_R3.2
+[1] 67.51269
+[1] 32.48731
+
+# P3.3
+diss_R3.3; sim_R3.3
+[1] 44.44444
+[1] 55.55556
+
+# P12
+diss_R12c; sim_R12c
+[1] 38.46154
+[1] 61.53846
