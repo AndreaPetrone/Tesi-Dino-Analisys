@@ -14,12 +14,14 @@ P1.2_conservativo <- matrice_specie_plot[, c("S_1.2", "R_1.2b")]
 # SCELTA DEL PLOT PIU' DIS-SIMILE 
 
 # P1
-diss_R1; 
+diss_R1; sim_R1
 [1] 31.34328
+[1] 68.65672
 
 # P2
-diss_R2; 
+diss_R2; sim_R2
 [1] 21.34831
+[1] 78.65169
 
 # P1.1
 diss_R1.1c; sim_R1.1c
