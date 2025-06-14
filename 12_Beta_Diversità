@@ -18,3 +18,29 @@ bray_beta <- mapply(function(s, r) {
 
 # Guarda i valori
 bray_beta
+S_1     S_1.1     S_1.2     S_1.3      S_12       S_2     S_2.1     S_2.2     S_2.3     S_3.1     S_3.2 
+0.3134328 0.6692913 0.5774648 0.6296296 0.3846154 0.2134831 0.6563574 0.6137072 0.6498054 0.8160920 0.6751269 
+    S_3.3 
+0.4444444 
+
+# Il risultato (es. 0.669, 0.577, 0.816, ecc.) rappresenta quanto è cambiata la composizione delle specie in quel plot → più vicino a 1 = più cambiata (più turnover)
+
+# Calcola la media
+mean_beta <- mean(bray_beta)
+mean_beta
+[1] 0.5536209
+
+# La media dei valori di dissimilarità tra i rilievi originali (survey) e i loro rispettivi resurvey è circa 0.55.
+# i rilievi sono cambiati del 55% rispetto alla composizione originaria: non completamente diversi, ma neppure molto simili.
+  - 0 indica massima somiglianza (identici)
+  - 1 indica massima dissimilarità (completamente diversi)
+
+# Calcola la deviazione standard
+sd_beta <- sd(bray_beta)
+sd_beta
+[1] 0.1759812
+
+# La deviazione standard misura quanto i singoli valori si discostano dalla media.
+# valore di circa 0.18 indica che c'è una discreta variabilità tra i plot
+# alcuni sono rimasti più simili nel tempo (bassa dissimilarità), altri molto cambiati.
+# In statistica, se la deviazione standard è circa un terzo della media, come qui (~33%), si parla di variabilità moderata.
