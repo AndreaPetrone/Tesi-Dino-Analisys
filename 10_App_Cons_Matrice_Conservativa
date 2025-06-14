@@ -1,5 +1,6 @@
 # Crea la matrice conservativa selezionando solo survey e resurvey con dissimilarità più bassa
 matrice_conservativa <- matrice_specie_plot[, c(
+  "S_1", "R_1",       # un solo resurvey 
   "S_1.1", "R_1.1c",
   "S_1.2", "R_1.2b",
   "S_1.3", "R_1.3b",
@@ -12,6 +13,8 @@ matrice_conservativa <- matrice_specie_plot[, c(
   "S_3.3", "R_3.3",
   "S_12",  "R_12c"
 )]
+
+view(matrice_conservativa)
 
 # controllo
 dim(matrice_conservativa)
