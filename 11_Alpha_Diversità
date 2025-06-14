@@ -11,8 +11,10 @@ alpha_diversity
 
 # Risultato 
 
-S_1.1 R_1.1c  S_1.2 R_1.2b  S_1.3 R_1.3b    S_2    R_2  S_2.1 R_2.1b  S_2.2 R_2.2a  S_2.3 R_2.3b  S_3.1 R_3.1a  S_3.2  R_3.2  S_3.3  R_3.3   S_12  R_12c 
-    14     21     15     14     13     14     11     14     17     14     22     20     22     11     15     24     15     20     15     19      5      2 
+ S_1    R_1  S_1.1 R_1.1c  S_1.2 R_1.2b  S_1.3 R_1.3b    S_2    R_2  S_2.1 R_2.1b  S_2.2 R_2.2a  S_2.3 R_2.3b 
+    22     17     14     21     15     14     13     14     11     14     17     14     22     20     22     11 
+ S_3.1 R_3.1a  S_3.2  R_3.2  S_3.3  R_3.3   S_12  R_12c 
+    15     24     15     20     15     19      5      2 
 
 # CONFRONTO SURVEY VS RESURVEY 
 
@@ -21,20 +23,20 @@ resurvey_cols <- grep("^R_", colnames(matrice_conservativa))
 
 alpha_T0 <- colSums(matrice_conservativa[, survey_cols] > 0)
 alpha_T0
-S_1.1 S_1.2 S_1.3   S_2 S_2.1 S_2.2 S_2.3 S_3.1 S_3.2 S_3.3  S_12 
-   14    15    13    11    17    22    22    15    15    15     5
+ S_1 S_1.1 S_1.2 S_1.3   S_2 S_2.1 S_2.2 S_2.3 S_3.1 S_3.2 S_3.3  S_12 
+  22    14    15    13    11    17    22    22    15    15    15     5 
 
 alpha_T1 <- colSums(matrice_conservativa[, resurvey_cols] > 0)
 alpha_T1
-R_1.1c R_1.2b R_1.3b    R_2 R_2.1b R_2.2a R_2.3b R_3.1a  R_3.2  R_3.3  R_12c 
-    21     14     14     14     14     20     11     24     20     19      2 
+R_1 R_1.1c R_1.2b R_1.3b    R_2 R_2.1b R_2.2a R_2.3b R_3.1a  R_3.2  R_3.3  R_12c 
+17     21     14     14     14     14     20     11     24     20     19      2 
 
 #  MEDIA ALPHA PER T0 E T1:
 
 mean_T0 <- mean(alpha_T0)
-[1] 14.90909
+[1] 15.5
 mean_T1 <- mean(alpha_T1)
-[1] 15.72727
+[1] 15.83333
 
 # codice per R per grafico -> boxplot per confronto sintetico
 
@@ -48,6 +50,8 @@ alpha_df <- data.frame(
 # Se usi ggplot2:
 library(ggplot2)
 
+# codice per boxplot
+
 ggplot(alpha_df, aes(x = tempo, y = alpha)) +
   geom_boxplot(fill = c("skyblue", "tomato")) +
   labs(
@@ -60,4 +64,7 @@ ggplot(alpha_df, aes(x = tempo, y = alpha)) +
 # La mediana non cambia molto, ma si nota:
   - una variabilità simile tra T0 e T1
   - un outlier molto marcato a T1, suggerendo una possibile degradazione locale in almeno un plot
-  - In generale, la diversità alpha non sembra cambiare drasticamente tra i due tempi, ma serve un test statistico (es. test t per dati appaiati, Wilcoxon) per        verificarlo.
+  - In generale, la diversità alpha non sembra cambiare drasticamente tra i due tempi, ma serve un test statistico (es. test t per dati appaiati, Wilcoxon) per verificarlo.
+  - La diversità alpha è complessivamente stabile, ma con alcune variazioni locali tra plot.
+  - Le variazioni non sono drammatiche, ma c’è una tendenza generale alla leggera perdita di ricchezza di specie
+  - La media è leggermente più alta a T1, nonostante la mediana sia più bassa. Questo potrebbe essere dovuto ad alcuni valori alti (es. R_3.1a = 24) che alzano la media.
