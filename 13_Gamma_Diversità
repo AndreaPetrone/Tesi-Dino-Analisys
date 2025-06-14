@@ -1,0 +1,31 @@
+# GAMMA DIVERSITA'
+
+# La γ-diversità rappresenta la diversità complessiva dell'intera area studiata considerando tutti i plot insieme.
+# si ignora l’abbondanza e si usa il fatto che il valore sia maggiore di zero per dire che una specie è presente.
+
+# γ-diversità: numero totale di specie presenti almeno in un plot
+
+# Survey (T0): considera le specie con abbondanza > 0
+gamma_T0 <- sum(rowSums(matrice_conservativa[, survey_cols]) > 0)
+
+# Resurvey (T1)
+gamma_T1 <- sum(rowSums(matrice_conservativa[, resurvey_cols]) > 0)
+
+# Mostra i risultati
+gamma_T0; gamma_T1
+[1] 79
+[1] 71
+
+# GRAFICO
+# Valori della gamma diversità
+gamma_values <- c(T0 = 79, T1 = 71)
+
+# Grafico a barre
+barplot(gamma_values,
+        col = c("forestgreen", "darkorange"),
+        main = "Gamma diversità (diversità totale)",
+        ylab = "Numero di specie",
+        ylim = c(0, max(gamma_values) + 10))
+
+abline(h = mean(gamma_values), col = "red", lty = 2)
+text(x = 1:2, y = gamma_values + 2, labels = gamma_values, cex = 1.1)
