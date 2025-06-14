@@ -1,0 +1,31 @@
+# NON E' PRESENTE NEL CODICE DI R-STUDIO 
+
+# Inserisci i tuoi valori
+alpha_mean_T0 <- 15.5
+alpha_mean_T1 <- 15.83
+beta_mean <- 0.55    # Approssimato da 0.5536209
+gamma_T0 <- 79
+gamma_T1 <- 71
+
+# Costruiamo una matrice con le 3 metriche nei due tempi
+diversita_data <- rbind(
+  Alpha = c(T0 = alpha_mean_T0, T1 = alpha_mean_T1),
+  Beta  = c(T0 = beta_mean,      T1 = beta_mean),     # stessa per T0 e T1 (differenze temporali)
+  Gamma = c(T0 = gamma_T0,       T1 = gamma_T1)
+)
+
+# Grafico a barre affiancate
+barplot(diversita_data,
+        beside = TRUE,
+        col = c("skyblue", "lightgreen", "salmon"),
+        ylim = c(0, max(diversita_data) + 10),
+        main = "Confronto tra Alpha, Beta e Gamma diversità",
+        ylab = "Valore",
+        legend.text = rownames(diversita_data),
+        args.legend = list(x = "topright"),
+        names.arg = c("T0", "T1"))
+
+# Aggiungi valori sopra le barre
+text(x = barplot(diversita_data, beside = TRUE, plot = FALSE),
+     y = as.vector(diversita_data) + 2,
+     labels = round(as.vector(diversita_data), 2), cex = 0.8)
