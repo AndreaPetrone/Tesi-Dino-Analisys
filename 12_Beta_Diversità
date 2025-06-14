@@ -1,3 +1,20 @@
 # BETA DIVERSITA'
 
 # La beta diversità nel tuo caso va calcolata tra le coppie di survey e resurvey dello stesso plot.
+# ho la mia matrice_conservativa -> partiamo da quella
+
+# ordina le colonne:
+T0 <- matrice_conservativa[, grep("^S_", colnames(matrice_conservativa))]
+T1 <- matrice_conservativa[, grep("^R_", colnames(matrice_conservativa))]
+T0 <- T0[, order(colnames(T0))]
+T1 <- T1[, order(colnames(T1))]
+
+# Calcolo Bray-Curtis per ogni coppia di colonne (una T0 con la sua T1):
+# serve library(vegan)
+
+bray_beta <- mapply(function(s, r) {
+  vegdist(rbind(s, r), method = "bray")
+}, as.data.frame(T0), as.data.frame(T1))
+
+# Guarda i valori
+bray_beta
