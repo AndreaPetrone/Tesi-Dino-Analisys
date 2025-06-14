@@ -57,3 +57,7 @@ ggplot(alpha_df, aes(x = tempo, y = alpha)) +
   ) +
   theme_minimal()
 
+# La mediana non cambia molto, ma si nota:
+  - una variabilità simile tra T0 e T1
+  - un outlier molto marcato a T1, suggerendo una possibile degradazione locale in almeno un plot
+  - In generale, la diversità alpha non sembra cambiare drasticamente tra i due tempi, ma serve un test statistico (es. test t per dati appaiati, Wilcoxon) per        verificarlo.
