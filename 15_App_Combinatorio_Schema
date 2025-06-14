@@ -1,0 +1,20 @@
+# SCHEMA OPERATIVO PER APPROCCIO COMBINATORIO
+
+# sottomatrici per il plot (già ottenute al foglio 4) DA COPIARE E INCOLLARE TOGLIENDO P1.1_all e mettendo P1.1
+P1.1_all <- matrice_specie_plot[, c("S_1.1", "R_1.1a", "R_1.1b", "R_1.1c")]
+
+# 1) Alpha diversità: per tutte le colonne DA CALCOLARE 
+alpha_all <- colSums(P1.1_all > 0)
+
+# 2) Beta diversità: Bray-Curtis tra S_1.1 e ciascuna replica
+bray_all <- sapply(c("R_1.1a","R_1.1b","R_1.1c"), function(r) {
+  as.numeric(vegdist(t(P1.1_all[, c("S_1.1", r)]), method="bray"))
+})
+
+# 3) Gamma diversità: specie totali in S_1.1 + tutte le repliche
+gamma_all <- sum(rowSums(P1.1_all) > 0)
+
+# 4) Sintesi: media α, media β, media γ (qui gamma è unico per plot)
+mean_alpha <- mean(alpha_all)
+mean_beta  <- mean(bray_all)
+# gamma_all resta unico
