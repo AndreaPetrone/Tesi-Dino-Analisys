@@ -17,7 +17,15 @@ getwd()
  matrice di abbondanza (o presenza/assenza) con:
   - Le righe = specie
   - Le colonne = rilievi (S_1, S_1.1, R_1.1a, ecc.)
- colonna aggiuntiva con forme biologiche 
+ colonna aggiuntiva con forme biologiche scritte come abbreviazioni:
+  Forma biologica	Abbreviazione
+  Fanerofita	          Ph
+  Camefita	            Ch
+  Emicriptofita	        H
+  Geofita / Criptofita	G
+  Terofita	            T
+  Elofita              	He
+  Idrofita	            Hy
 
 # 2: Calcolo della composizione per forma biologica
 Dopo aver unito la matrice con le forme biologiche, calcolo:
