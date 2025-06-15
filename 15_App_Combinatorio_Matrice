@@ -9,8 +9,12 @@ combinatorio_cols <- grep("^S_|^R_", colnames(matrice_specie_plot), value = TRUE
 # Crea la matrice combinatoria
 matrice_combinatoria <- matrice_specie_plot[, combinatorio_cols]
 
-# controllare matrice combinatoria
-view(matrice_specie_plot)
+# Rimuovi eventuali colonne TOT
+colonne_da_togliere <- grep("S_TOT|R_TOT", colnames(matrice_combinatoria), value = TRUE)
+matrice_combinatoria_pulita <- matrice_combinatoria[, !colnames(matrice_combinatoria) %in% colonne_da_togliere]
+
+# controllo
+view(matrice_combinatoria_pulita)
 
 # Confrontare ciascun rilievo originale (S_x) con tutti i resurvey disponibili per quel plot (R_x.y) → e analizzare le metriche di diversità (α, β, γ) ripetutamente.
   Quindi:
@@ -18,4 +22,3 @@ view(matrice_specie_plot)
   S_2 con R_2, R_2.1a,b,c, R_2.2a,b,c, R_2.3a,b,c
   S_3 con R_3.1a,b,c, R_3.2, R_3.3
   S_12 con R_12a, R_12b, R_12c
-  
