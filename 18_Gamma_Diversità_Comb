@@ -1,0 +1,11 @@
+# GAMMA DIVERSITA'
+
+# Nel contesto combinatorio, la gamma diversità rappresenta:
+- La gamma diversità combinatoria è il numero totale di specie uniche osservate almeno una volta in tutti i resurvey del gruppo 
+- È quindi una ricchezza cumulativa di specie nei rilievi ripetuti (T1), ignorando la composizione a T0 (i S_).
+
+# Perché considerare solo i resurvey?
+- capire la diversità attuale (T1), senza influenze dei rilievi storici (T0).
+- valutare come la composizione complessiva cambia nel tempo.
+- Ignorando i S_, focalizzi la gamma diversità sulla fase più recente.
+
