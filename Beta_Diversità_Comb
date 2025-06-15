@@ -1,0 +1,47 @@
+# BETA DIVERSITA' COMBINATORIA
+
+# calcolo della β-diversità combinatoria utilizzando la matrice matrice_combinatoria_pulita e i gruppi P_1, P_2, P_3, P_12 
+# calcolare quanto sono diverse tra loro le comunità nei resurvey, all'interno di ciascun gruppo combinatorio.
+# indice di dissimilarità: Bray-Curtis, adatto per dati di abbondanza 
+
+# La β-diversità misura quanto sono diverse tra loro le comunità presenti nei resurvey (R_) di uno stesso gruppo combinatorio (es. P_1, P_2, ...).
+  - vale 0 quando due rilievi hanno composizione identica;
+  - vale 1 quando non hanno specie in comune;
+  - valori intermedi indicano diversità parziale.
+
+# Funzione per calcolare la beta-diversità (media dissimilarità Bray-Curtis tra i resurvey)
+beta_combinatoria <- lapply(gruppi_combinatori, function(colonne) {
+  submatrice <- matrice_combinatoria_pulita[, colonne, drop = FALSE]
+  
+  # Seleziona solo le colonne dei resurvey (escludi S_)
+  resurvey_cols <- grep("^R_", colnames(submatrice), value = TRUE)
+  submatrice_resurvey <- submatrice[, resurvey_cols, drop = FALSE]
+  
+  # Se ci sono almeno 2 colonne, calcola la dissimilarità Bray-Curtis
+  if (ncol(submatrice_resurvey) >= 2) {
+    dist_matrix <- vegdist(t(submatrice_resurvey), method = "bray")  # attenzione: serve la trasposizione
+    media_bc <- mean(dist_matrix)
+  } else {
+    media_bc <- NA  # non si può calcolare con meno di 2 colonne
+  }
+  return(media_bc)
+})
+
+# Trasformiamo in un dataframe per visualizzare
+beta_combinatoria_df <- data.frame(
+  Gruppo = names(beta_combinatoria),
+  Beta_div = unlist(beta_combinatoria)
+)
+
+# Visualizziamo
+beta_combinatoria_df
+
+# grafico
+ggplot(beta_combinatoria_df, aes(x = Gruppo, y = Beta_div)) +
+  geom_bar(stat = "identity", fill = "darkorchid", color = "black", width = 0.6) +
+  theme_minimal(base_size = 14) +
+  labs(title = "Beta diversità combinatoria",
+       x = "Gruppo combinatorio",
+       y = "Media dissimilarità (Bray-Curtis)") +
+  ylim(0, 1) +
+  geom_text(aes(label = round(Beta_div, 2)), vjust = -0.5, size = 4)
