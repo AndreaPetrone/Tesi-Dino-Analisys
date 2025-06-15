@@ -1,0 +1,55 @@
+# ALPHA DIVERSITA' COMBINATORIA
+
+# Per ogni plot (S_1, S_2, S_3, S_12) calcolare:
+  La ricchezza specifica (α) di tutte le sue repliche (R_)
+  Poi fare la media e la deviazione standard
+
+# definisci per ogni plot il suo survey con le sue repliche
+gruppi_combinatori <- list(
+  P_1 = c("S_1", "S_1.1", "S_1.2", "S_1.3", "R_1", "R_1.1a", "R_1.1b", "R_1.1c", "R_1.2a", "R_1.2b", "R_1.2c", "R_1.3a", "R_1.3b", "R_1.3c"),
+  P_2 = c("S_2", "S_2.1", "S_2.2", "S_2.3", "R_2", "R_2.1a", "R_2.1b", "R_2.1c", "R_2.2a", "R_2.2b", "R_2.2c", "R_2.3a", "R_2.3b", "R_2.3c"),
+  P_3 = c("S_3.1", "S_3.2", "S_3.3", "R_3.1a", "R_3.1b", "R_3.1c", "R_3.2", "R_3.3"),
+  P_12 = c("S_12", "R_12a", "R_12b", "R_12c")
+)
+
+# Funzione per calcolare il numero di specie (α)
+# alpha_combinatoria dovrebbe essere una lista di vettori, dove ogni vettore contiene come nomi le colonne (cioè plot S_ e R_) e come valori il numero di specie presenti per ciascuna colonna.
+
+alpha_combinatoria <- lapply(gruppi_combinatori, function(colonne) {
+  submatrice <- matrice_combinatoria_pulita[, colonne, drop = FALSE]
+  sapply(as.data.frame(t(submatrice)), function(riga) sum(riga > 0, na.rm = TRUE))
+})
+
+# per ciascun gruppo prendiamo solo le repliche R_ e calcoliamo media e deviazione standard:
+alpha_statistiche <- lapply(alpha_combinatoria, function(vettore_alpha) {
+  repliche <- vettore_alpha[grep("^R", names(vettore_alpha))]
+  media <- mean(repliche)
+  sd <- sd(repliche)
+  return(c(media = media, sd = sd))
+})
+
+# Trasforma in tabella
+alpha_statistiche_df <- as.data.frame(do.call(rbind, alpha_statistiche))
+alpha_statistiche_df
+
+# Con questa modifica:
+  - submatrice ha ancora le specie come righe e i plot come colonne.
+  - t(submatrice) scambia righe e colonne, così ogni riga sarà un plot.
+  - sapply(..., sum(... > 0)) ti restituisce un vettore con nomi dei plot e numero di specie presenti in ciascuno.
+
+# GRAFICO ALPHA 
+
+# Aggiungi colonna con il nome del gruppo
+alpha_statistiche_df$Gruppo <- rownames(alpha_statistiche_df)
+
+# Crea il barplot
+ggplot(alpha_statistiche_df, aes(x = Gruppo, y = media)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  geom_errorbar(aes(ymin = media - sd, ymax = media + sd), width = 0.2) +
+  labs(title = "Alpha diversità (approccio combinatorio)",
+       x = "Gruppo combinatorio",
+       y = "Media α-diversità ± SD") +
+  theme_minimal()
+
+# L’altezza della barra = media del numero di specie nei resurvey per ogni gruppo.
+# Le barre d’errore = la variabilità (± deviazione standard) tra le repliche del gruppo.
