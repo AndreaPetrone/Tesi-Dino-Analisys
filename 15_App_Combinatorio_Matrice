@@ -1,12 +1,5 @@
 # CREAZIONE MATRICE COMBINATORIA 
 
-# Confrontare ciascun rilievo originale (S_x) con tutti i resurvey disponibili per quel plot (R_x.y) → e analizzare le metriche di diversità (α, β, γ) ripetutamente.
-  Quindi:
-  S_1 sarà confrontato con R_1, R_1.1c, R_1.2b, R_1.3b
-  S_2 con R_2, R_2.1b, R_2.2a, R_2.3b
-  S_3 con R_3.1a, R_3.2, R_3.3
-  ecc.
-
 # la matrice ha tutti i rilievi survey e resurvey, deriva da matrice specie plot ma senza i metadati inutili
 # contiene tutte le repliche
 
@@ -19,3 +12,10 @@ matrice_combinatoria <- matrice_specie_plot[, combinatorio_cols]
 # controllare matrice combinatoria
 view(matrice_specie_plot)
 
+# Confrontare ciascun rilievo originale (S_x) con tutti i resurvey disponibili per quel plot (R_x.y) → e analizzare le metriche di diversità (α, β, γ) ripetutamente.
+  Quindi:
+  S_1 sarà confrontato con R_1, R_1.1a,b,c, R_1.2a,b,c, R_1.3a,b,c
+  S_2 con R_2, R_2.1a,b,c, R_2.2a,b,c, R_2.3a,b,c
+  S_3 con R_3.1a,b,c, R_3.2, R_3.3
+  S_12 con R_12a, R_12b, R_12c
+  
