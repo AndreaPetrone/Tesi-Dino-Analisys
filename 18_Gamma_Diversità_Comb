@@ -9,3 +9,47 @@
 - valutare come la composizione complessiva cambia nel tempo.
 - Ignorando i S_, focalizzi la gamma diversità sulla fase più recente.
 
+# Calcolo gamma diversità combinatoria
+gamma_combinatoria <- sapply(gruppi_combinatori, function(colonne) {
+  # Seleziona solo i resurvey (colonne che iniziano con R_)
+  colonne_resurvey <- colonne[grepl("^R_", colonne)]
+  submatrice <- matrice_combinatoria_pulita[, colonne_resurvey, drop = FALSE]
+  
+  # Calcola il numero totale di specie presenti almeno una volta
+  sum(rowSums(submatrice) > 0)
+})
+
+# Mostra i risultati
+gamma_combinatoria
+
+ P_1  P_2  P_3 P_12 
+  47   52   50   10
+
+# GRAFICO
+
+# Carica ggplot2 se non lo hai già
+library(ggplot2)
+
+# Prepara i dati in formato dataframe
+gamma_df <- data.frame(
+  Gruppo = names(gamma_combinatoria),
+  Gamma_div = as.numeric(gamma_combinatoria)
+)
+
+# Crea il grafico
+ggplot(gamma_df, aes(x = Gruppo, y = Gamma_div)) +
+  geom_col(fill = "#69b3a2") +
+  geom_text(aes(label = Gamma_div), vjust = -0.5, size = 5) +
+  theme_minimal(base_size = 14) +
+  labs(
+    title = "Gamma diversità combinatoria",
+    x = "Gruppo",
+    y = "Numero totale di specie (gamma)"
+  ) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    axis.title = element_text(face = "bold")
+  )
+
+# Ogni barra = gamma diversità (numero di specie uniche tra i resurvey) per ciascun gruppo (P_1, P_2, ecc.).
+# Il numero esatto scritto sopra ogni barra.
