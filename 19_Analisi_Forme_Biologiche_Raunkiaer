@@ -34,3 +34,6 @@ Dopo aver unito la matrice con le forme biologiche, calcolo:
 - fare confronti nel tempo tra survey e resurvey (anche con medie, nel caso dell’approccio combinatorio).
 
 # 3: visualizzazione con grafici
+
+# i confronti (conservativo o combinatorio) vanno fatti a livello di "somma delle abbondanze" per forma biologica, non per specie.
+# devo prima aggregare le abbondanze per forma biologica, e poi confronto survey vs resurvey secondo l' approccio (conservativo o combinatorio).
