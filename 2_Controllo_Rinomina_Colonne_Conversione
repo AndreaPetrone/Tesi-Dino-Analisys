@@ -1,19 +1,40 @@
 # Sostituisci il percorso con quello reale, se non sei nella stessa directory del file
 dino_raw <- read_excel("Dino uniformato (survey e resurvey) 1 AC sistemato FS-VB.xlsx", skip = 2)
+# spiegazione:
+  - read_excel(...): legge il file Excel.
+  - skip = 2: salta le prime due righe perché non contengono dati, ma nomi di colonne su due righe (li importiamo dopo).
+  - Risultato: si ottiene un data.frame chiamato dino_raw con i dati delle specie e delle abbondanze.
 
 # Leggi le prime due righe (header)
 header1 <- read_excel("Dino uniformato (survey e resurvey) 1 AC sistemato FS-VB.xlsx", range = "A1:AZ1", col_names = FALSE)
 header2 <- read_excel("Dino uniformato (survey e resurvey) 1 AC sistemato FS-VB.xlsx", range = "A2:AZ2", col_names = FALSE)
+# spiegazione:
+  - range = "A1:AZ1": prende prima riga dell’excel (es. “S_1”, “R_1”, ecc.)
+  - range = "A2:AZ2": prende seconda riga (es. “1”, “1.1a”, ecc.)
+  - col_names = FALSE: evita che queste righe vengano trattate come intestazioni.
 
 # Unisci le due righe per creare i veri nomi delle colonne
 new_names <- paste0(as.character(header2[1,]), "_", as.character(header1[1,]))
+# spiegazione: 
+  - Combina le due righe come:
+  "1" + "_" + "S" → "1_S" (oppure "1.2a_R" ecc.)
+  - Serve a distinguere meglio i plot e ad avere nomi chiari e unici.
+
 new_names <- make.unique(new_names)  # Rende tutti i nomi univoci, la funzione make.unique() aggiunge un suffisso .1, .2, ecc. in automatico se ci sono duplicati.
+# spiegazione:
+  - Evita duplicati nei nomi di colonna (es. "1_S" potrebbe comparire più volte).
+  - Aggiunge .1, .2, ecc., per differenziare se necessario.
+
 new_names[1:2] <- c("Famiglia", "Specie")
+# spiegazione:
+- Imposta le prime due colonne con nomi corretti, dato che contengono info testuali, non dati di abbondanza.
 
 # Applica i nuovi nomi alle colonne
 colnames(dino_raw) <- new_names
+# spiegazione:
+  - Rinomina le colonne del dataset dino_raw con i new_names appena creati.
 
-# Funzione per trasformare i valori in numeri
+# Funzione per trasformare i valori di BB in numeri
 converti_valore <- function(x) {
   suppressWarnings(  # evita messaggi per ogni coercizione
     case_when(
@@ -25,8 +46,19 @@ converti_valore <- function(x) {
     )
   )
 }
+# spiegazione:
+  - case_when(...): valuta ogni valore della cella.
+  - "r" → 0.2 (specie rara)
+  - "+" → 0.5 (specie molto scarsa)
+  - "" o NA → 0 (assenza)
+  - Se il valore è un numero (es. "2"), lo converte con as.numeric(x)
+  - Qualsiasi altra cosa → NA_real_
 
 # Applichiamo la conversione a tutte le colonne tranne "Famiglia" e "Specie"
 dati_convertiti <- dino_raw %>%
   mutate(across(-c(Famiglia, Specie), ~ converti_valore(as.character(.))))
+# spiegazione:
+  - Usa dplyr::mutate per modificare colonne.
+  - across(-c(Famiglia, Specie), ...): applica la funzione a tutte le colonne tranne Famiglia e Specie.
+  - converti_valore(...): converte tutto in valori numerici.
 
