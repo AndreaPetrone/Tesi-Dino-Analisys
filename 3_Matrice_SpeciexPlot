@@ -1,8 +1,21 @@
+# Questo blocco di codice serve per preparare i dati in un formato compatibile con l’analisi ecologica
+
 # Analisi dello script - isoliamo solo le colonne con dati numerici per i plot
 matrice_specie_plot <- dati_convertiti %>%
   select(-Famiglia, -Specie) %>%  # esclude colonne descrittive
   as.matrix()                     # converte in matrice numerica
+# spiegazione:
+  - select(-Famiglia, -Specie):
+    - Elimina le colonne testuali (Famiglia e Specie) perché non servono per il calcolo delle metriche.
+    - Resta solo ciò che contiene i valori numerici di abbondanza per ogni plot.
+  - as.matrix():
+    - Converte il data.frame risultante in matrice numerica, necessaria per le funzioni di vegan, betapart, ecc.
+
 rownames(matrice_specie_plot) <- dati_convertiti$Specie
+# spiegazione:
+  - Rende le specie i nomi delle righe della matrice.
+  - Così ogni riga rappresenta una specie.
+  - Ogni colonna rappresenta un plot (es. S_1, R_1.2b...).
 
 🔸 select(-Famiglia, -Specie) → toglie le colonne non numeriche
 🔸 as.matrix() → crea una matrice numerica, come richiesto da molti pacchetti ecologici
@@ -14,7 +27,7 @@ matrice_specie_plot[1:10, 1:5]  # prime 10 righe e prime 5 colonne
 View(matrice_specie_plot) # tabella più comoda
 
 # Perché è importante avere una matrice così?
-# Perché tutte le funzioni ecologiche in R richiedono questo formato:
+# Perché tutte le funzioni ecologiche in R richiedono questo formato -> i dati floristici in una matrice di comunità: il punto di partenza per ogni analisi di diversità e struttura vegetazionale.
 # vegdist(matrice_specie_plot, method = "bray") → Bray-Curtis
 # diversity(matrice_specie_plot) → diversità alpha
 # betadiver() → beta-diversità
