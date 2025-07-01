@@ -1,47 +1,80 @@
 # BETA DIVERSITA' COMBINATORIA
 
-# calcolo della β-diversità combinatoria utilizzando la matrice matrice_combinatoria_pulita e i gruppi P_1, P_2, P_3, P_12 
-# calcolare quanto sono diverse tra loro le comunità nei resurvey, all'interno di ciascun gruppo combinatorio.
-# indice di dissimilarità: Bray-Curtis, adatto per dati di abbondanza 
+# Per ogni plot con più resurvey (es. P1.1, P2.3, ecc.):
+  - Si mantiene fisso il survey (es. S_1.1)
+  - A ogni iterazione si estrae una replica random tra i suoi resurvey (es. R_1.1a, R_1.1b, R_1.1c)
+  - Si calcola la Bray-Curtis dissimilarity
+  - Dopo 100 iterazioni → si ottiene una media e deviazione standard
 
-# La β-diversità misura quanto sono diverse tra loro le comunità presenti nei resurvey (R_) di uno stesso gruppo combinatorio (es. P_1, P_2, ...).
-  - vale 0 quando due rilievi hanno composizione identica;
-  - vale 1 quando non hanno specie in comune;
-  - valori intermedi indicano diversità parziale.
-
-# Funzione per calcolare la beta-diversità (media dissimilarità Bray-Curtis tra i resurvey)
-beta_combinatoria <- lapply(gruppi_combinatori, function(colonne) {
-  submatrice <- matrice_combinatoria_pulita[, colonne, drop = FALSE]
-  
-  # Seleziona solo le colonne dei resurvey (escludi S_)
-  resurvey_cols <- grep("^R_", colnames(submatrice), value = TRUE)
-  submatrice_resurvey <- submatrice[, resurvey_cols, drop = FALSE]
-  
-  # Se ci sono almeno 2 colonne, calcola la dissimilarità Bray-Curtis
-  if (ncol(submatrice_resurvey) >= 2) {
-    dist_matrix <- vegdist(t(submatrice_resurvey), method = "bray")  # attenzione: serve la trasposizione
-    media_bc <- mean(dist_matrix)
-  } else {
-    media_bc <- NA  # non si può calcolare con meno di 2 colonne
-  }
-  return(media_bc)
-})
-
-# Trasformiamo in un dataframe per visualizzare
-beta_combinatoria_df <- data.frame(
-  Gruppo = names(beta_combinatoria),
-  Beta_div = unlist(beta_combinatoria)
+# Lista dei gruppi: survey + tutti i suoi resurvey
+gruppi_plot <- list(
+  P1 = c("S_1", "R_1"),
+  P2 = c("S_2", "R_2"),
+  P1.1 = c("S_1.1", "R_1.1a", "R_1.1b", "R_1.1c"),
+  P1.2 = c("S_1.2", "R_1.2a", "R_1.2b", "R_1.2c"),
+  P1.3 = c("S_1.3", "R_1.3a", "R_1.3b", "R_1.3c"),
+  P2.1 = c("S_2.1", "R_2.1a", "R_2.1b", "R_2.1c"),
+  P2.2 = c("S_2.2", "R_2.2a", "R_2.2b", "R_2.2c"),
+  P2.3 = c("S_2.3", "R_2.3a", "R_2.3b", "R_2.3c"),
+  P3.1 = c("S_3.1", "R_3.1a", "R_3.1b", "R_3.1c"),
+  P3.2 = c("S_3.2", "R_3.2"),
+  P3.3 = c("S_3.3", "R_3.3"),
+  P12 = c("S_12", "R_12a", "R_12b", "R_12c")
 )
 
-# Visualizziamo
-beta_combinatoria_df
+n_iterazioni <- 100
+risultati_beta <- list()
 
-# grafico
-ggplot(beta_combinatoria_df, aes(x = Gruppo, y = Beta_div)) +
-  geom_bar(stat = "identity", fill = "darkorchid", color = "black", width = 0.6) +
-  theme_minimal(base_size = 14) +
-  labs(title = "Beta diversità combinatoria",
-       x = "Gruppo combinatorio",
-       y = "Media dissimilarità (Bray-Curtis)") +
-  ylim(0, 1) +
-  geom_text(aes(label = round(Beta_div, 2)), vjust = -0.5, size = 4)
+for (nome_plot in names(gruppi_plot)) {
+  colonne <- gruppi_plot[[nome_plot]]
+  survey_col <- colonne[1]
+  resurvey_cols <- colonne[-1]
+
+  beta_iter <- numeric(n_iterazioni)
+
+  for (i in 1:n_iterazioni) {
+    col_scelta <- if (length(resurvey_cols) > 1) sample(resurvey_cols, 1) else resurvey_cols
+    sotto_mat <- matrice_specie_plot[, c(survey_col, col_scelta)]
+    dissim <- vegdist(t(sotto_mat), method = "bray")[1]
+    beta_iter[i] <- dissim
+  }
+
+  risultati_beta[[nome_plot]] <- data.frame(
+    Plot = nome_plot,
+    Beta = beta_iter
+  )
+}
+
+# Unione risultati in un unico dataframe
+beta_combinatoria_df <- do.call(rbind, risultati_beta)
+
+# Calcola media e SD
+beta_summary <- beta_combinatoria_df %>%
+  group_by(Plot) %>%
+  summarise(media = mean(Beta), sd = sd(Beta), .groups = "drop")
+
+# Grafico
+ggplot(beta_summary, aes(x = Plot, y = media)) +
+  geom_bar(stat = "identity", fill = "lightgreen", width = 0.7) +
+  geom_errorbar(aes(ymin = media - sd, ymax = media + sd), width = 0.2) +
+  labs(title = "Beta-diversità combinatoria (Bray-Curtis)",
+       y = "Dissimilarità media (0 = simile, 1 = diverso)",
+       x = "Plot") +
+  theme_minimal()
+
+# PERCHÉ SOLO UNA COLONNA (BAR) PER PLOT?
+# La beta diversità è un confronto**, non una misura “assoluta” come l’alpha.
+# Quindi **non ha senso separare survey e resurvey come colonne**, perché ognuna delle 100 iterazioni è già un confronto tra loro.
+# Quella colonna rappresenta **la media di 100 confronti** fra: `survey` (fisso) e `resurvey` (diverso ogni volta)
+# Le **barre d’errore** (linee nere) indicano la **variabilità (deviazione standard)** nei 100 confronti casuali.
+
+# interpretazione
+# Valore vicino a 0** → survey e resurvey sono molto simili (poca dissimilarità)
+# Valore vicino a 1** → survey e resurvey sono molto diversi
+# Deviazione standard alta** → grande variabilità a seconda della replica scelta
+# Deviazione standard bassa** → tutte le repliche danno risultati simili
+
+# esempio da grafico
+# `P2` → ha una **bassa dissimilarità (\~0.2)** → survey e resurvey sono molto simili.
+# `P3.1` → dissimilarità molto alta (\~0.85) → grandi cambiamenti tra survey e resurvey.
+# `P12` → valore intermedio ma con **alta variabilità** → dipende molto da quale replica scegli.
