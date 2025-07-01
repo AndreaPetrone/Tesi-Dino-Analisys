@@ -71,3 +71,22 @@ ggplot(alpha_summary, aes(x = Plot, y = media, fill = Tipo)) +
   labs(title = "Alpha-diversità combinatoria (media ± SD)",
        x = "Plot", y = "Numero di specie") +
   theme_minimal()
+
+# Perché il survey appare come una linea piatta nel boxplot?
+  - Perché il valore della diversità α del survey non cambia mai: è uno solo per ogni plot.
+  - per poterlo inserire in un boxplot, devi avere un vettore con più di un valore (altrimenti R non disegna il boxplot).
+  - Quindi abbiamo replicato quel singolo valore 100 volte (per avere un boxplot visibile). Ma siccome tutti i valori sono uguali, il boxplot:
+    - ha mediana = quartili = valore costante
+  - quindi appare come una linea orizzontale sottile (senza "box").
+
+# Perché il resurvey ha un’area maggiore (boxplot ampio)?
+  - Ogni resurvey è estratto casualmente tra 2 o 3 repliche, in ogni iterazione.
+  - In 100 iterazioni potresti avere diversi valori di α (numero di specie), a seconda di quale replica viene selezionata.
+  - Risultato: ottieni una distribuzione di valori → da qui il boxplot ha un’estensione, che rappresenta:
+    - la variabilità tra resurvey dello stesso plot
+    - quanto può cambiare la diversità in base a quale replica è selezionata.
+
+# Dopo l’estrazione iterata, non si doveva fare la media?
+  - Sì e no — dipende da cosa vuoi visualizzare:
+    - Per il boxplot: non si fa la media, si mostra la distribuzione completa → utile per vedere la variabilità.
+    - Per un confronto sintetico finale (es. in una tabella o altro grafico): puoi calcolare la media e la deviazione standard dei 100 valori di α dei resurvey.
