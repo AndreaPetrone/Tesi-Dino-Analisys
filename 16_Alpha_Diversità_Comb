@@ -1,55 +1,73 @@
-# ALPHA DIVERSITA' COMBINATORIA - MODIFICA
+# ALPHA DIVERSITA' COMBINATORIA
 
-# Per ogni plot (S_1, S_2, S_3, S_12) calcolare:
-  La ricchezza specifica (α) di tutte le sue repliche (R_)
-  Poi fare la media e la deviazione standard
-
-# definisci per ogni plot il suo survey con le sue repliche
-gruppi_combinatori <- list(
-  P_1 = c("S_1", "S_1.1", "S_1.2", "S_1.3", "R_1", "R_1.1a", "R_1.1b", "R_1.1c", "R_1.2a", "R_1.2b", "R_1.2c", "R_1.3a", "R_1.3b", "R_1.3c"),
-  P_2 = c("S_2", "S_2.1", "S_2.2", "S_2.3", "R_2", "R_2.1a", "R_2.1b", "R_2.1c", "R_2.2a", "R_2.2b", "R_2.2c", "R_2.3a", "R_2.3b", "R_2.3c"),
-  P_3 = c("S_3.1", "S_3.2", "S_3.3", "R_3.1a", "R_3.1b", "R_3.1c", "R_3.2", "R_3.3"),
-  P_12 = c("S_12", "R_12a", "R_12b", "R_12c")
+# Lista dei gruppi di plot e relative colonne (survey + possibili resurvey)
+gruppi_plot <- list(
+  P1 = c("S_1", "R_1"),
+  P2 = c("S_2", "R_2"),
+  P1.1 = c("S_1.1", "R_1.1a", "R_1.1b", "R_1.1c"),
+  P1.2 = c("S_1.2", "R_1.2a", "R_1.2b", "R_1.2c"),
+  P1.3 = c("S_1.3", "R_1.3a", "R_1.3b", "R_1.3c"),
+  P2.1 = c("S_2.1", "R_2.1a", "R_2.1b", "R_2.1c"),
+  P2.2 = c("S_2.2", "R_2.2a", "R_2.2b", "R_2.2c"),
+  P2.3 = c("S_2.3", "R_2.3a", "R_2.3b", "R_2.3c"),
+  P3.1 = c("S_3.1", "R_3.1a", "R_3.1b", "R_3.1c"),
+  P3.2 = c("S_3.2", "R_3.2"),
+  P3.3 = c("S_3.3", "R_3.3"),
+  P12 = c("S_12", "R_12a", "R_12b", "R_12c")
 )
 
-# Funzione per calcolare il numero di specie (α)
-# alpha_combinatoria dovrebbe essere una lista di vettori, dove ogni vettore contiene come nomi le colonne (cioè plot S_ e R_) e come valori il numero di specie presenti per ciascuna colonna.
+# Numero di iterazioni
+n_iterazioni <- 100
 
-alpha_combinatoria <- lapply(gruppi_combinatori, function(colonne) {
-  submatrice <- matrice_combinatoria_pulita[, colonne, drop = FALSE]
-  sapply(as.data.frame(t(submatrice)), function(riga) sum(riga > 0, na.rm = TRUE))
-})
+# Lista per salvare i risultati
+risultati_alpha <- list()
 
-# per ciascun gruppo prendiamo solo le repliche R_ e calcoliamo media e deviazione standard:
-alpha_statistiche <- lapply(alpha_combinatoria, function(vettore_alpha) {
-  repliche <- vettore_alpha[grep("^R", names(vettore_alpha))]
-  media <- mean(repliche)
-  sd <- sd(repliche)
-  return(c(media = media, sd = sd))
-})
+# Loop su ciascun gruppo
+for (nome_plot in names(gruppi_plot)) {
+  colonne <- gruppi_plot[[nome_plot]]
+  survey_col <- colonne[1]
+  resurvey_cols <- colonne[-1]
+  
+  alpha_survey <- sum(matrice_specie_plot[, survey_col] > 0)
+  alpha_resurvey_iter <- numeric(n_iterazioni)
+  
+  for (i in 1:n_iterazioni) {
+    col_scelta <- if (length(resurvey_cols) > 1) sample(resurvey_cols, 1) else resurvey_cols
+    alpha_resurvey_iter[i] <- sum(matrice_specie_plot[, col_scelta] > 0)
+  }
+  
+  risultati_alpha[[nome_plot]] <- data.frame(
+    Plot = nome_plot,
+    Tipo = "Resurvey",
+    Alpha = alpha_resurvey_iter
+  )
+  
+  # Aggiungi il valore costante del survey
+  risultati_alpha[[paste0(nome_plot, "_survey")]] <- data.frame(
+    Plot = nome_plot,
+    Tipo = "Survey",
+    Alpha = rep(alpha_survey, n_iterazioni)
+  )
+}
 
-# Trasforma in tabella
-alpha_statistiche_df <- as.data.frame(do.call(rbind, alpha_statistiche))
-alpha_statistiche_df
+# Unisci tutti i risultati
+alpha_combinatoria_df <- do.call(rbind, risultati_alpha)
 
-# Con questa modifica:
-  - submatrice ha ancora le specie come righe e i plot come colonne.
-  - t(submatrice) scambia righe e colonne, così ogni riga sarà un plot.
-  - sapply(..., sum(... > 0)) ti restituisce un vettore con nomi dei plot e numero di specie presenti in ciascuno.
+# Calcola media e sd per survey e resurvey
+alpha_summary <- alpha_combinatoria_df %>%
+  group_by(Plot, Tipo) %>%
+  summarise(
+    media = mean(Alpha),
+    sd = sd(Alpha),
+    .groups = "drop"
+  )
 
-# GRAFICO ALPHA 
-
-# Aggiungi colonna con il nome del gruppo
-alpha_statistiche_df$Gruppo <- rownames(alpha_statistiche_df)
-
-# Crea il barplot
-ggplot(alpha_statistiche_df, aes(x = Gruppo, y = media)) +
-  geom_bar(stat = "identity", fill = "steelblue") +
-  geom_errorbar(aes(ymin = media - sd, ymax = media + sd), width = 0.2) +
-  labs(title = "Alpha diversità (approccio combinatorio)",
-       x = "Gruppo combinatorio",
-       y = "Media α-diversità ± SD") +
+# Grafico con barre e barre d’errore
+ggplot(alpha_summary, aes(x = Plot, y = media, fill = Tipo)) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.9), width = 0.7) +
+  geom_errorbar(aes(ymin = media - sd, ymax = media + sd),
+                position = position_dodge(width = 0.9), width = 0.2) +
+  scale_fill_manual(values = c("Survey" = "lightblue", "Resurvey" = "salmon")) +
+  labs(title = "Alpha-diversità combinatoria (media ± SD)",
+       x = "Plot", y = "Numero di specie") +
   theme_minimal()
-
-# L’altezza della barra = media del numero di specie nei resurvey per ogni gruppo.
-# Le barre d’errore = la variabilità (± deviazione standard) tra le repliche del gruppo.
