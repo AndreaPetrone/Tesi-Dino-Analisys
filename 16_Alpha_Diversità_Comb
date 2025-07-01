@@ -1,5 +1,8 @@
 # ALPHA DIVERSITA' COMBINATORIA
 
+# Obiettivo del codice:
+  Calcolare la diversità α (numero di specie) per ciascun plot, ripetendo 100 volte il confronto tra il survey fisso e una delle sue repliche resurvey selezionata   a caso, e poi visualizzare i risultati con media e deviazione standard.
+
 # Lista dei gruppi di plot e relative colonne (survey + possibili resurvey)
 gruppi_plot <- list(
   P1 = c("S_1", "R_1"),
@@ -16,26 +19,30 @@ gruppi_plot <- list(
   P12 = c("S_12", "R_12a", "R_12b", "R_12c")
 )
 
-# Numero di iterazioni
+# Numero di iterazioni: indichi quante volte vuoi ripetere l’estrazione casuale dei resurvey per ciascun plot.
 n_iterazioni <- 100
 
-# Lista per salvare i risultati
+# Lista per salvare i risultati: Servirà per salvare tutti i risultati per ogni plot e ogni iterazione.
 risultati_alpha <- list()
 
-# Loop su ciascun gruppo
+# Loop su ciascun gruppo e serve per separare la colonna survey da quella del resurvey
 for (nome_plot in names(gruppi_plot)) {
-  colonne <- gruppi_plot[[nome_plot]]
-  survey_col <- colonne[1]
-  resurvey_cols <- colonne[-1]
+  colonne <- gruppi_plot[[nome_plot]]        # prendi colonne del plot corrente
+  survey_col <- colonne[1]                   # il primo è il survey
+  resurvey_cols <- colonne[-1]               # gli altri sono i resurvey
   
-  alpha_survey <- sum(matrice_specie_plot[, survey_col] > 0)
-  alpha_resurvey_iter <- numeric(n_iterazioni)
+  alpha_survey <- sum(matrice_specie_plot[, survey_col] > 0) # calcolo alpha survey costante: abbondanza>0
+  alpha_resurvey_iter <- numeric(n_iterazioni) # Un vettore lungo 100 per salvare i valori di α per ogni resurvey selezionato casualmente.
   
   for (i in 1:n_iterazioni) {
     col_scelta <- if (length(resurvey_cols) > 1) sample(resurvey_cols, 1) else resurvey_cols
     alpha_resurvey_iter[i] <- sum(matrice_specie_plot[, col_scelta] > 0)
   }
-  
+
+#Per ogni iterazione:
+  - scegli a caso una colonna tra i resurvey
+  - calcoli la diversità α (numero di specie presenti) e la salvi
+
   risultati_alpha[[nome_plot]] <- data.frame(
     Plot = nome_plot,
     Tipo = "Resurvey",
@@ -50,7 +57,11 @@ for (nome_plot in names(gruppi_plot)) {
   )
 }
 
-# Unisci tutti i risultati
+# Crea due data.frame:
+  - uno con i valori ottenuti dai resurvey (100 valori diversi),
+  - uno con il valore fisso del survey replicato 100 volte, per poterli confrontare in un grafico.
+
+# Unisci tutti i risultati: Combina tutti i risultati della lista risultati_alpha in un unico dataframe.
 alpha_combinatoria_df <- do.call(rbind, risultati_alpha)
 
 # Calcola media e sd per survey e resurvey
