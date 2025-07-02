@@ -1,55 +1,71 @@
-# GAMMA DIVERSITA'
+# GAMMA DIVERSITA' COMBINATORIA 
+# calcoliamo la gamma diversità combinatoria
+# la confrontiamo con la gamma dell'approccio conservativo con T0 e T1COMB/CONS
 
-# Nel contesto combinatorio, la gamma diversità rappresenta:
-- La gamma diversità combinatoria è il numero totale di specie uniche osservate almeno una volta in tutti i resurvey del gruppo 
-- È quindi una ricchezza cumulativa di specie nei rilievi ripetuti (T1), ignorando la composizione a T0 (i S_).
+# Stai stimando la diversità totale dell’isola oggi, sotto l’ipotesi: “Se per ogni plot avessi fatto un solo resurvey, pescato casualmente, quante specie diverse totali osserverei?” Quindi simuli T1 molte volte. Ogni simulazione è una combinazione di 1 solo resurvey per plot. T0 (survey) è una singola stima storica, fissa → non varia → l’hai già calcolata nel conservativo.
 
-# Perché considerare solo i resurvey?
-- capire la diversità attuale (T1), senza influenze dei rilievi storici (T0).
-- valutare come la composizione complessiva cambia nel tempo.
-- Ignorando i S_, focalizzi la gamma diversità sulla fase più recente.
+# Nella α- e β-diversità combinatoria:ho confrontato ogni survey (fisso, uno solo per plot) con una replica casuale tra i resurvey (più d’uno per plot) → plot per plot. Perciò il survey va incluso, perché stai misurando come cambia un singolo plot nel tempo. La variabilità è nel resurvey, per questo ripeti l’estrazione. Alla fine ottieni una distribuzione per plot → e.g. boxplot di alpha survey vs resurvey.
 
-# Calcolo gamma diversità combinatoria
-gamma_combinatoria <- sapply(gruppi_combinatori, function(colonne) {
-  # Seleziona solo i resurvey (colonne che iniziano con R_)
-  colonne_resurvey <- colonne[grepl("^R_", colonne)]
-  submatrice <- matrice_combinatoria_pulita[, colonne_resurvey, drop = FALSE]
-  
-  # Calcola il numero totale di specie presenti almeno una volta
-  sum(rowSums(submatrice) > 0)
-})
-
-# Mostra i risultati
-gamma_combinatoria
-
- P_1  P_2  P_3 P_12 
-  47   52   50   10
-
-# GRAFICO
-
-# Carica ggplot2 se non lo hai già
-library(ggplot2)
-
-# Prepara i dati in formato dataframe
-gamma_df <- data.frame(
-  Gruppo = names(gamma_combinatoria),
-  Gamma_div = as.numeric(gamma_combinatoria)
+✔ Ha senso tenere i survey perché sono parte del confronto 1 vs molti.
+# Lista dei gruppi (resurvey) – salta i survey
+gruppi_plot <- list(
+  P1 = "R_1",
+  P2 = "R_2",
+  P1.1 = c("R_1.1a", "R_1.1b", "R_1.1c"),
+  P1.2 = c("R_1.2a", "R_1.2b", "R_1.2c"),
+  P1.3 = c("R_1.3a", "R_1.3b", "R_1.3c"),
+  P2.1 = c("R_2.1a", "R_2.1b", "R_2.1c"),
+  P2.2 = c("R_2.2a", "R_2.2b", "R_2.2c"),
+  P2.3 = c("R_2.3a", "R_2.3b", "R_2.3c"),
+  P3.1 = c("R_3.1a", "R_3.1b", "R_3.1c"),
+  P3.2 = "R_3.2",
+  P3.3 = "R_3.3",
+  P12 = c("R_12a", "R_12b", "R_12c")
 )
 
-# Crea il grafico
-ggplot(gamma_df, aes(x = Gruppo, y = Gamma_div)) +
-  geom_col(fill = "#69b3a2") +
-  geom_text(aes(label = Gamma_div), vjust = -0.5, size = 5) +
-  theme_minimal(base_size = 14) +
-  labs(
-    title = "Gamma diversità combinatoria",
-    x = "Gruppo",
-    y = "Numero totale di specie (gamma)"
-  ) +
-  theme(
-    plot.title = element_text(face = "bold", hjust = 0.5),
-    axis.title = element_text(face = "bold")
-  )
+# Numero di iterazioni
+n_iterazioni <- 100
+gamma_iter <- numeric(n_iterazioni)
 
-# Ogni barra = gamma diversità (numero di specie uniche tra i resurvey) per ciascun gruppo (P_1, P_2, ecc.).
-# Il numero esatto scritto sopra ogni barra.
+for (i in 1:n_iterazioni) {
+  colonne_estratte <- c()  # inizializza
+  
+  for (colonne in gruppi_plot) {
+    if (length(colonne) > 1) {
+      scelta <- sample(colonne, 1)
+    } else {
+      scelta <- colonne
+    }
+    colonne_estratte <- c(colonne_estratte, scelta)
+  }
+  
+  sotto_matrice <- matrice_specie_plot[, colonne_estratte]
+  gamma_iter[i] <- sum(rowSums(sotto_matrice > 0) > 0)
+}
+
+# Calcola media e sd
+media_gamma_comb <- mean(gamma_iter)
+sd_gamma_comb <- sd(gamma_iter)
+
+# --- Valori conservativi già calcolati (T0 e T1) ---
+gamma_T0 <- 79
+gamma_T1 <- 71
+
+# --- CREAZIONE GRAFICO CONFRONTO ---
+
+df_gamma <- data.frame(
+  Metodo = c("T0 (Survey)", "T1 (Conservativo)", "T1 (Combinatorio)"),
+  Gamma = c(gamma_T0, gamma_T1, media_gamma_comb),
+  SD = c(0, 0, sd_gamma_comb)
+)
+
+# Boxplot alternativo
+ggplot(df_gamma, aes(x = Metodo, y = Gamma, fill = Metodo)) +
+  geom_bar(stat = "identity", width = 0.6) +
+  geom_errorbar(aes(ymin = Gamma - SD, ymax = Gamma + SD), width = 0.2) +
+  scale_fill_manual(values = c("T0 (Survey)" = "forestgreen",
+                               "T1 (Conservativo)" = "steelblue",
+                               "T1 (Combinatorio)" = "tomato")) +
+  labs(title = "Gamma diversità: confronto tra epoche e approcci",
+       y = "Numero di specie", x = "") +
+  theme_minimal()
