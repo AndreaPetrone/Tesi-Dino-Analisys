@@ -40,6 +40,16 @@ sd_beta <- sd(bray_beta)
 sd_beta
 [1] 0.1759812
 
+# grafico beta diversità -> barplot: cambiamento ciascun plot
+
+barplot(bray_beta,
+        col = "skyblue",
+        main = "Beta diversità (Bray-Curtis) per ciascun plot",
+        ylab = "Dissimilarità",
+        las = 2)
+
+abline(h = mean_beta, col = "red", lty = 2) # riga che indica la media
+
 # La deviazione standard misura quanto i singoli valori si discostano dalla media.
 # valore di circa 0.18 indica che c'è una discreta variabilità tra i plot
 # alcuni sono rimasti più simili nel tempo (bassa dissimilarità), altri molto cambiati.
