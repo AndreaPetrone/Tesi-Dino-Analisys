@@ -68,3 +68,4 @@ ggplot(alpha_df, aes(x = tempo, y = alpha)) +
   - La diversità alpha è complessivamente stabile, ma con alcune variazioni locali tra plot.
   - Le variazioni non sono drammatiche, ma c’è una tendenza generale alla leggera perdita di ricchezza di specie
   - La media è leggermente più alta a T1, nonostante la mediana sia più bassa. Questo potrebbe essere dovuto ad alcuni valori alti (es. R_3.1a = 24) che alzano la media.
+
