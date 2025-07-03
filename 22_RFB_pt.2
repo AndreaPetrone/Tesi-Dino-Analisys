@@ -1,0 +1,62 @@
+# Step 3: Calcolo dell’abbondanza relativa per forma biologica in ciascun plot
+
+#Obiettivo:
+  Somma dell’abbondanza per ciascuna forma biologica in ogni plot
+  Conversione in abbondanza relativa: percentuale rispetto al totale del plot
+  Preparazione dei dati per il boxplot finale: confronto T0 (survey) vs T1 (resurvey)
+
+# Step 3.1 – Sommare l'abbondanza per forma biologica in ogni plot
+library(dplyr)
+
+# Aggiungiamo le forme biologiche come colonna alla matrice delle abbondanze
+matrice_con_forme <- cbind(forma_bio = forme_biologiche, matrice_abbondanze)
+
+# Calcolo della somma di abbondanze per ogni forma biologica, per ciascun plot
+abb_per_forma_plot <- matrice_con_forme %>%
+  group_by(forma_bio) %>%
+  summarise(across(everything(), ~ sum(as.numeric(.), na.rm = TRUE)))
+
+# Verifica struttura
+head(abb_per_forma_plot)
+
+# Step 3.2 – Calcolo abbondanza relativa (in percentuale)
+
+# Estrai solo le colonne numeriche
+solo_valori <- abb_per_forma_plot[, -1]
+
+# Somma totale per ciascun plot
+tot_plot <- colSums(solo_valori)
+
+# Calcolo percentuale (abbondanza relativa)
+abb_relativa <- sweep(solo_valori, 2, tot_plot, FUN = "/") * 100
+
+# Rimettiamo la colonna delle forme biologiche
+abb_relativa <- cbind(Forma_biologica = abb_per_forma_plot$forma_bio, abb_relativa)
+
+# Visualizza
+head(abb_relativa)
+
+# Step 3.3 – Prepara dati per il boxplot: confronto T0 vs T1
+
+# Colonne survey (T0) e resurvey (T1)
+colonne_T0 <- grep("^S_", colnames(abb_relativa), value = TRUE)
+colonne_T1 <- grep("^R_", colnames(abb_relativa), value = TRUE)
+
+# Riorganizza dati in formato lungo
+library(tidyr)
+
+dati_long <- abb_relativa %>%
+  pivot_longer(cols = -Forma_biologica, names_to = "Plot", values_to = "Abbondanza") %>%
+  mutate(Tipo = ifelse(grepl("^S_", Plot), "T0", "T1"))
+
+# Step 3.4 – Boxplot finale
+
+# ggplot(dati_long, aes(x = Forma_biologica, y = Abbondanza, fill = Tipo)) +
+  geom_boxplot(position = position_dodge(width = 0.8)) +
+  labs(
+    title = "Distribuzione dell'abbondanza relativa per forma biologica",
+    x = "Forma biologica", y = "Abbondanza relativa (%)"
+  ) +
+  scale_fill_manual(values = c("T0" = "lightblue", "T1" = "tomato")) +
+  theme_minimal()
+
