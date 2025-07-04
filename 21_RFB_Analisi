@@ -46,6 +46,10 @@ abb_perc <- abb_per_forma_plot %>%
   ungroup() %>%
   filter(is.finite(perc))
 
+# select(-matches("TOT"))            # elimina S_TOT, R_TOT
+# select(where(~!all(is.na(.))))     # elimina colonne piene di NA
+# select(-matches("^NA_"))           # elimina colonne con nomi tipo NA_NA.1
+
 # 6. Boxplot finale
 ggplot(abb_perc, aes(x = forma_bio, y = perc, fill = Tipo)) +
   geom_boxplot(outlier.shape = 16, outlier.size = 2, position = position_dodge(0.9)) +
