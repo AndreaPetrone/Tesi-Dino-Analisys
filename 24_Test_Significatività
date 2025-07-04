@@ -1,0 +1,62 @@
+# Quale test usare: Test di Wilcoxon
+  Perché scegliere Wilcoxon:
+  I dati sono percentuali → non sempre seguono una distribuzione normale.
+  Abbiamo campioni appaiati ma non necessariamente gaussiani.
+  Il boxplot mostra asimmetrie e outlier → meglio un test non parametrico.
+  Il test di Wilcoxon confronta due gruppi indipendenti (T0 e T1) senza assumere normalità.
+  Un test parametrico (come il t-test) funziona bene solo se i dati sono distribuiti normalmente e senza outlier.
+  Ma se ci sono asimmetrie o outlier, è meglio usare un test non parametrico (come il Wilcoxon), che:
+    non fa assunzioni forti sulla forma della distribuzione,
+    è più robusto ai valori estremi.
+
+# Quando diciamo che “il boxplot mostra asimmetrie e outlier” e quindi è “meglio un test non parametrico”, intendiamo questo:
+  Asimmetrie nei boxplot
+  Un boxplot simmetrico ha la linea della mediana al centro del box, e le “whiskers” (i baffi) sopra e sotto di lunghezza simile.
+  Nel tuo grafico, invece, alcune forme biologiche (es. Ch, P, T) mostrano:
+    mediana spostata verso l'alto o il basso del box,
+    box molto allungato da un lato,
+    oppure baffi (whiskers) asimmetrici.
+    I puntini neri fuori dai box nel grafico sono valori anomali o estremi (outlier).
+# Se i dati hanno molti outlier, un test parametrico (es. t-test) può dare risultati non affidabili.
+# Questo è un segnale di distribuzione non normale (cioè non “a campana”, non simmetrica).
+
+# Obiettivo: testare, per ogni forma biologica, se le abbondanze relative a T0 e T1 sono significativamente diverse.
+
+# Carica librerie necessarie
+library(dplyr)
+
+# Applichiamo il test per ciascuna forma biologica
+risultati_wilcoxon <- abb_perc %>%
+  group_by(forma_bio) %>%
+  summarise(
+    p_value = wilcox.test(perc ~ Tipo)$p.value
+  )
+
+# Aggiungiamo una colonna per indicare significatività
+risultati_wilcoxon <- risultati_wilcoxon %>%
+  mutate(significativo = ifelse(p_value < 0.05, "sì", "no"))
+
+# Mostra i risultati
+print(risultati_wilcoxon)
+
+# Interpretazione:
+  p_value < 0.05 → differenza statisticamente significativa tra T0 e T1.
+  La colonna significativo ti dice in modo chiaro quali forme biologiche hanno cambiamenti significativi.
+
+# risultati Wilcoxon
+forma_bio p_value significativo
+  <chr>       <dbl> <chr>        
+1 Ch         0.131  no           
+2 G          0.792  no           
+3 H          0.883  no           
+4 P          0.189  no           
+5 T          0.0802 no      
+
+# Tutti i p-value sono maggiori di 0.05 → nessuna differenza statisticamente significativa tra T0 e T1 per nessuna forma biologica.
+# Anche la forma con il valore più vicino alla soglia, le Terofite (T), ha un p-value di 0.0802, quindi non significativo.
+# In termini di abbondanza relativa, non c’è stato un cambiamento statisticamente significativo tra il tempo iniziale e quello finale per nessuna delle forme biologiche analizzate.
+
+# L’abbondanza relativa è rimasta statisticamente stabile tra survey e resurvey per tutte le forme.
+# “non significativo” non significa che non ci siano tendenze ecologiche. 
+# Ad esempio:Le camefite hanno una forte variabilità (come visto nel boxplot).
+# Alcune forme possono mostrare cambiamenti biologicamente rilevanti ma non abbastanza forti o costanti da risultare significativi.
