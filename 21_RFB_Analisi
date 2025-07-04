@@ -1,0 +1,61 @@
+# ANALISI DI VEGETAZIONE - FORME BIOLOGICHE - RAUNKIAER
+
+# Partiamo dal file matrice_specie_plot_Raunkiaer.csv, che contiene:
+  Le specie come righe
+  Le forme biologiche associate
+  Le abbondanze nei plot, già in formato numerico (Braun-Blanquet convertito)
+
+ # il file `matrice_specie_plot_Raunkiaer.csv`, che contiene:
+  Le specie come righe
+  Le forme biologiche associate
+  Le abbondanze nei plot, già in formato numerico (Braun-Blanquet convertito)
+
+# 1. Caricamento dati
+dati_raunkiaer <- read.csv("matrice_specie_plot_Raunkiaer.csv", sep = ";", header = TRUE)
+
+# 2. Librerie
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+# 3. Oggetti chiave
+rownames(dati_raunkiaer) <- dati_raunkiaer$specie
+forme_biologiche <- dati_raunkiaer$forme_biologiche
+matrice_abbondanze <- dati_raunkiaer[, -(1:2)]
+
+# 4. Somma abbondanze per forma biologica e plot
+matrice_con_forme <- cbind(forma_bio = forme_biologiche, matrice_abbondanze)
+
+abb_per_forma_plot <- matrice_con_forme %>%
+  group_by(forma_bio) %>%
+  summarise(across(everything(), ~ sum(as.numeric(.), na.rm = TRUE)))
+
+# 5. Prepara dati per boxplot (una sola volta)
+abb_perc <- abb_per_forma_plot %>%
+  # Escludi colonne non informative (eventuali totali)
+  select(-matches("TOT")) %>%
+  # Elimina colonne con tutti NA o con nome strano
+  select(where(~!all(is.na(.)))) %>%
+  select(-matches("^NA_")) %>%
+  # Passaggio a formato lungo
+  pivot_longer(-forma_bio, names_to = "Plot", values_to = "Abb") %>%
+  # Etichetta T0 vs T1
+  mutate(Tipo = ifelse(grepl("^S_", Plot), "T0", "T1")) %>%
+  group_by(Plot) %>%
+  mutate(perc = 100 * Abb / sum(Abb, na.rm = TRUE)) %>%
+  ungroup() %>%
+  filter(is.finite(perc))
+
+# 6. Boxplot finale
+ggplot(abb_perc, aes(x = forma_bio, y = perc, fill = Tipo)) +
+  geom_boxplot(outlier.shape = 16, outlier.size = 2, position = position_dodge(0.9)) +
+  labs(
+    title = "Distribuzione dell'abbondanza relativa per forma biologica",
+    x = "Forma biologica",
+    y = "Abbondanza relativa (%)"
+  ) +
+  scale_fill_manual(values = c("T0" = "skyblue", "T1" = "tomato")) +
+  theme_minimal()
+
+
+
