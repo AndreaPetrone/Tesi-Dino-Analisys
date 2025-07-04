@@ -2,11 +2,10 @@
 # calcoliamo la gamma diversità combinatoria
 # la confrontiamo con la gamma dell'approccio conservativo con T0 e T1COMB/CONS
 
-# Stai stimando la diversità totale dell’isola oggi, sotto l’ipotesi: “Se per ogni plot avessi fatto un solo resurvey, pescato casualmente, quante specie diverse totali osserverei?” Quindi simuli T1 molte volte. Ogni simulazione è una combinazione di 1 solo resurvey per plot. T0 (survey) è una singola stima storica, fissa → non varia → l’hai già calcolata nel conservativo.
+# Stai stimando la diversità totale dell’isola oggi, sotto l’ipotesi: “Se per ogni plot avessi fatto un solo resurvey, pescato casualmente, quante specie diverse totali osserverei?” Quindi simuli T1 molte volte. Ogni simulazione è una combinazione di 1 solo resurvey per plot. T0 (survey) è una singola stima storica, fissa → non varia → l’hai già calcolata nel conservativo -> quindi non tieni i survey 
 
-# Nella α- e β-diversità combinatoria:ho confrontato ogni survey (fisso, uno solo per plot) con una replica casuale tra i resurvey (più d’uno per plot) → plot per plot. Perciò il survey va incluso, perché stai misurando come cambia un singolo plot nel tempo. La variabilità è nel resurvey, per questo ripeti l’estrazione. Alla fine ottieni una distribuzione per plot → e.g. boxplot di alpha survey vs resurvey.
+# Nella α- e β-diversità combinatoria:ho confrontato ogni survey (fisso, uno solo per plot) con una replica casuale tra i resurvey (più d’uno per plot) → plot per plot. Perciò il survey va incluso, perché stai misurando come cambia un singolo plot nel tempo. La variabilità è nel resurvey, per questo ripeti l’estrazione. Alla fine ottieni una distribuzione per plot → e.g. boxplot di alpha survey vs resurvey.Ha senso tenere i survey perché sono parte del confronto 1 vs molti.
 
-✔ Ha senso tenere i survey perché sono parte del confronto 1 vs molti.
 # Lista dei gruppi (resurvey) – salta i survey
 gruppi_plot <- list(
   P1 = "R_1",
