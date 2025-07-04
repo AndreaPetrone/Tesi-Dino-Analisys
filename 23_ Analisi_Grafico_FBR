@@ -1,1 +1,73 @@
+# Interpretazione del grafico
 
+# Asse X – Forma biologica
+  Ch: camefite
+  G: geofite
+  H: emicriptofite
+  P: fanerofite
+  T: terofite
+
+# Asse Y – Abbondanza relativa (%)
+  La percentuale rappresenta quanto ogni forma biologica contribuisce all’abbondanza totale di specie per ciascun plot. 
+  Ogni punto del boxplot è un plot.
+
+# Perché calcolare l'abbondanza relativa per forma biologica per ciascun plot?
+# 1. Per confrontare le forme biologiche tra tempi T0 e T1
+  Se consideri solo l'abbondanza assoluta, non potresti confrontare i plot in modo corretto. Perché?
+  Ogni plot può avere coperture diverse (più o meno specie, più o meno vegetazione).
+  Se in un plot la copertura totale è 100 e in un altro è 50, non puoi confrontare direttamente i valori.
+  Calcolando la percentuale, cioè l’abbondanza relativa (%) per ogni forma biologica, normalizzi tutto: ogni plot ha un totale pari al 100%.
+
+# 2. Per osservare i cambiamenti strutturali della vegetazione
+  L'analisi Raunkiaer serve a capire quali strategie di vita stanno cambiando nel tempo (es. aumento di emicriptofite, calo di camefite…).
+  Ma questo tipo di cambiamento non si può osservare efficacemente con valori grezzi: serve vedere le proporzioni delle forme biologiche rispetto al totale di      ogni rilievo.
+  Esempio:
+    Se nel 1950 le camefite erano 30% del totale
+    E nel 2020 sono 50%
+    → è cambiata la struttura funzionale della comunità, anche se il numero di specie è simile.
+
+# 3. Per rendere confrontabili plot con diversi numeri di specie o coperture
+  L’abbondanza relativa elimina le differenze dovute alla scala, superficie, o qualità dei dati, e permette un confronto equo fra:
+  plot grandi e piccoli
+  survey e resurvey
+  siti con più o meno specie
+
+# Hai calcolato l’abbondanza relativa perché:
+  normalizza i dati
+  permette confronti corretti
+  fa emergere cambiamenti funzionali nella vegetazione (strategie vitali)
+  è lo standard nell’analisi delle forme biologiche secondo Raunkiaer
+
+# Cosa mostra il boxplot
+Ogni box mostra:
+  Linea centrale = mediana (50° percentile)
+  Estremi del box = 1° e 3° quartile (25°–75° percentile)
+  "Baffi" (whiskers) = estendono i valori considerati non outlier
+  Puntini neri = outlier, cioè valori estremi rispetto alla distribuzione
+
+# Andamenti per forma biologica
+
+# Camefite (Ch)
+  T0 (azzurro): grandissima variabilità, con alcuni plot che superano il 90%
+  T1 (rosso): valori più bassi e concentrati
+  Riduzione netta della presenza relativa nel tempo
+# Geofite (G)
+  Presenti in bassa abbondanza sia a T0 che T1
+  Differenze tra epoche sono minime
+# Emicriptofite (H)
+  Distribuzione piuttosto stabile
+  Mediana simile tra T0 e T1 → nessuna variazione rilevante
+# Fanerofite (P)
+  Tendenza a crescere nel tempo
+  T1 (rosso) ha mediana e quartili superiori più alti
+  Aumento della dominanza di fanerofite nel tempo
+# Terofite (T)
+  Molto più presenti a T1
+  Incremento netto rispetto a T0, suggerendo una possibile instabilità/disturbo o condizioni più ruderalizzate
+
+# Forma biologica - Tendenza da T0 a T1 - Interpretazione   
+  Ch (camefite)       Forte calo          Perdita di specie perenni basse            
+  G (geofite)         Stabile             Nessuna variazione significativa              
+  H (emicriptofite)   Stabile             Comunità resilienti                            
+  P (fanerofite)      Aumento             Maggiore presenza di arbusti o alberi           
+  T (terofite)        Aumento forte       Maggiore presenza di specie annuali (disturbo?) 
