@@ -1,0 +1,34 @@
+# 1. Caricamento dati
+  Carica il file .csv contenente:
+    specie nelle righe
+    colonne: nome specie, forma biologica, abbondanze nei vari plot
+
+# 2. Preparazione della matrice
+  assegni alle righe i nomi delle specie
+  crei un vettore forme_biologiche con le categorie Raunkiaer
+  estrai solo le colonne con valori numerici di abbondanza
+  Separazione e costruzione di:
+    nomi delle specie
+    vettore delle forme biologiche
+    matrice con solo i valori di abbondanza
+
+# 3. Somma delle abbondanze per forma biologica per plot
+  unisce le abbondanze alla forma biologica di ogni specie
+  somma le abbondanze per ogni forma biologica in ciascun plot
+  Esempio: somma di tutte le emicriptofite (H) nel plot S_1.1
+
+# 4. Calcolo dell’abbondanza relativa (%)
+  rimuove colonne inutili (totali, colonne vuote, nomi NA)
+  trasforma la tabella da larga a lunga (una riga per ogni forma x plot)
+  crea la variabile Tipo (T0 per Survey, T1 per Resurvey)
+  calcola la percentuale di ogni forma biologica nel plot
+  rimuove i valori non validi (NaN, Inf, etc.)
+
+# 5. Pulizia dati (filtra colonne inutili, NA, plot vuoti ecc.)
+  Evita colonne spurie o con nomi non validi (come NA_NA) e previene errori nel boxplot
+  
+# 6. Visualizzazione con boxplot
+  boxplot comparativo tra epoche (T0 = blu, T1 = rosso)
+  x = forma biologica (Ch, G, H, P, T)
+  y = abbondanza relativa percentuale
+  Outlier (puntini): rilievi con valori molto diversi dagli altri, calcolati automaticamente da ggplot2.
