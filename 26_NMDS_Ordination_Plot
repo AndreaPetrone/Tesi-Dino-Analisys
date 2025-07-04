@@ -1,0 +1,68 @@
+# 1 – Calcola NMDS
+
+library(vegan)
+library(ggplot2)
+
+# La matrice già preparata:
+# dati_multivariati contiene: Plot | Tipo | Ch | G | H | P | T
+matrice_nmds <- dati_multivariati %>%
+  select(-Plot, -Tipo)  # solo abbondanze
+
+# NMDS (2 dimensioni, metodo Bray-Curtis)
+set.seed(123)
+nmds <- metaMDS(matrice_nmds, distance = "bray", k = 2, trymax = 100)
+
+# Controlla stress
+nmds$stress
+
+# Se lo stress < 0.2, la rappresentazione è accettabile. Sotto 0.1 è ottima.
+# Lo stress è una misura di quanto bene l’NMDS riesce a rappresentare i dati multivariati in due (o più) dimensioni.
+# L’NMDS (Non-Metric Multidimensional Scaling) cerca di posizionare i tuoi plot su un piano (di solito 2D) in modo che la distanza tra i punti rappresenti fedelmente le differenze tra le composizioni di forme biologiche (cioè le distanze di Bray-Curtis).
+# Ma ridurre da uno spazio complesso (es. 5 dimensioni) a 2 comporta inevitabilmente una perdita di informazioni. Lo stress misura quanto è grande questa perdita.
+# il tuo stress è < 0.1, quindi l’NMDS ha rappresentato bene la struttura dei dati in 2D, con poca distorsione. Le distanze tra i punti nel grafico sono affidabili per interpretare le differenze tra T0 e T1.
+
+# 2 – Prepara dati per ggplot
+
+# Coord. NMDS + Tipo
+punti_nmds <- as.data.frame(nmds$points)
+punti_nmds$Tipo <- dati_multivariati$Tipo
+punti_nmds$Plot <- dati_multivariati$Plot
+
+# 3 – Crea grafico NMDS
+
+ggplot(punti_nmds, aes(x = MDS1, y = MDS2, color = Tipo)) +
+  geom_point(size = 4, alpha = 0.8) +
+  stat_ellipse(aes(fill = Tipo), geom = "polygon", alpha = 0.2, color = NA) +
+  scale_color_manual(values = c("T0" = "skyblue", "T1" = "tomato")) +
+  labs(title = "Ordination plot (NMDS) – Forme biologiche",
+       x = "Dimensione 1 (NMDS1)", y = "Dimensione 2 (NMDS2)") +
+  theme_minimal()
+
+# spiegazione del grafico:
+# Che cosa rappresenta il grafico NMDS?
+1. Ogni punto rappresenta un plot (un’unità di campionamento).
+2. L’asse x (NMDS1) e l’asse y (NMDS2) non hanno un’unità fisica: sono dimensioni astratte che riflettono la distanza compositiva tra i plot.
+3. La distanza tra i punti rappresenta quanto i plot differiscono tra loro in base alla composizione di forme biologiche (Ch, G, H, P, T).
+   Più vicini = composizione simile
+   Più lontani = composizione diversa
+# Colori ed ellissi
+  Blu (T0): dati del primo survey.
+  Rosso (T1): dati del resurvey.
+  Le ellissi rappresentano una sorta di "area media" che racchiude la distribuzione dei plot per ciascun tempo.
+# Come si interpreta questo grafico?
+  Sovrapposizione ellissi T0 e T1:
+  - Le ellissi si sovrappongono in gran parte, quindi non si osserva una netta separazione tra i due gruppi.
+  - Questo suggerisce che la composizione delle forme biologiche nei plot non è molto cambiata tra T0 e T1 (almeno visivamente).
+  Distribuzione dei punti:
+  - I plot T0 e T1 sono mescolati tra loro nello spazio NMDS.
+  - Anche questo indica assenza di una chiara distinzione compositiva tra epoche.
+  Outlier:
+  - Alcuni punti (specialmente T1 in basso a destra e T0 in basso a sinistra) si allontanano dalle ellissi.
+  - Potrebbero rappresentare plot con composizioni molto particolari o influenzati da errori/peculiarità locali.
+
+
+# Il test dice che non ci sono differenze significative nella composizione delle forme biologiche tra i due gruppi (T0 e T1).
+# Il p-value (0.211) è maggiore di 0.05 → le differenze che vedi nel grafico NMDS potrebbero essere dovute al caso.
+# Il grafico NMDS ti mostra visivamente le somiglianze/differenze tra i plot.
+# La PERMANOVA ti dice se le distanze tra i gruppi (T0 vs T1) sono statisticamente rilevanti.
+# In questo caso, no: nonostante una lieve separazione visiva, la differenza non è significativa.
