@@ -9,22 +9,22 @@
   `matrice_specie_plot`
   ⇒ matrice con le abbondanze per specie × plot (già pronta)
  `forme_biologiche`
-  ⇒ vettore con le **forme biologiche** associate a ciascuna specie, in ordine coerente con `rownames(matrice_specie_plot)`
+  ⇒ vettore con le forme biologiche associate a ciascuna specie, in ordine coerente con `rownames(matrice_specie_plot)`
 
 # Calcolo dell’abbondanza relativa per forma biologica**
-  Per ogni **plot**, devi:
-  * Calcolare la **somma totale delle abbondanze**
-  * Per ogni **specie**, calcolare l’**abbondanza relativa (%)**
-  * Raggruppare per **forma biologica** e sommare le relative percentuali
+  Per ogni plot, devi:
+  * Calcolare la somma totale delle abbondanze
+  * Per ogni specie, calcolare l’abbondanza relativa (%)
+  * Raggruppare per forma biologica e sommare le relative percentuali
     Risultato:
-    → Una tabella **plot × forma biologica**, con **percentuali di copertura**
+    → Una tabella plot × forma biologica, con percentuali di copertura
 
-# Preparare dati per confronto T0 vs T1**
-  * Etichettare i plot come **T0** o **T1**
+# Preparare dati per confronto T0 vs T1
+  * Etichettare i plot come T0 o T1
   * Unire i dati in un unico `data.frame` long per ggplot2
 
 # Visualizzazione
-  Boxplot per ogni forma biologica**:
+  Boxplot per ogni forma biologica:
   → sull’asse X la forma biologica
   → asse Y: % di copertura
   → colore/gruppo: T0 vs T1
