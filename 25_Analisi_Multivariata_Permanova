@@ -1,0 +1,49 @@
+# Obiettivo: capire se e quanto l’intera composizione (es. abbondanza relativa di tutte le forme biologiche) cambia tra T0 e T1.
+
+# Il test di Wilcoxon analizza una variabile alla volta (es. solo camefite, poi solo emicriptofite…)
+# L’analisi multivariata considera tutte le variabili insieme (es. tutta la comunità di forme biologiche nel suo complesso)
+
+# Perché nella realtà, spesso:
+# Non è una sola forma a cambiare significativamente
+# Ma è l’insieme delle abbondanze relative a “muoversi” (come uno spostamento della composizione generale della vegetazione)
+
+# Strumento: PERMANOVA (Permutational MANOVA)
+# Usa la distanza Bray-Curtis (perfetta per dati ecologici)
+# Ti dice se la composizione complessiva dei gruppi (T0 vs T1) è significativamente diversa
+
+# 1 – Prepara i dati
+library(dplyr)
+library(tidyr)
+library(vegan)
+
+# Dati da abb_perc (che hai già preparato)
+# Passaggio a formato wide per creare la matrice "plot × forma biologica"
+dati_multivariati <- abb_perc %>%
+  select(forma_bio, Plot, perc, Tipo) %>%
+  pivot_wider(names_from = forma_bio, values_from = perc)
+
+# Verifica struttura
+head(dati_multivariati)
+
+# 2 – Esegui PERMANOVA - usiamo adonis2() con distanza Bray-Curtis, perfetta per dati ecologici percentuali.
+
+# Matrice delle percentuali (escludi Plot e Tipo)
+matrice_perc <- dati_multivariati %>%
+  select(-Plot, -Tipo)
+
+# Variabile di raggruppamento
+gruppo <- dati_multivariati$Tipo
+
+# PERMANOVA
+set.seed(123)  # per rendere i risultati riproducibili
+risultato_permanova <- adonis2(matrice_perc ~ gruppo, method = "bray", permutations = 999)
+
+# Visualizza risultato
+print(risultato_permanova)
+
+# Interpretazione finale:
+# Il valore di p = 0.211 ➜ maggiore di 0.05, quindi:
+# Non ci sono differenze statisticamente significative tra la composizione delle forme biologiche nei plot di T0 e T1.
+# La variazione potrebbe essere dovuta al caso.
+# L'R² = 0.041 ➜ solo il 4% della variazione è spiegata dalla variabile "epoca" (T0/T1), il che è poco.
+# In sintesi: la PERMANOVA non ha trovato una differenza significativa tra T0 e T1 nella composizione delle forme biologiche. Tuttavia, il test suggerisce che una leggera tendenza al cambiamento esiste, anche se non è forte o chiara.
