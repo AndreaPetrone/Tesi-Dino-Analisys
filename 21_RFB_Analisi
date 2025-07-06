@@ -51,14 +51,28 @@ abb_perc <- abb_per_forma_plot %>%
 # select(-matches("^NA_"))           # elimina colonne con nomi tipo NA_NA.1
 
 # 6. Boxplot finale
-ggplot(abb_perc, aes(x = forma_bio, y = perc, fill = Tipo)) +
-  geom_boxplot(outlier.shape = 16, outlier.size = 2, position = position_dodge(0.9)) +
-  labs(
-    title = "Distribuzione dell'abbondanza relativa per forma biologica",
-    x = "Forma biologica",
-    y = "Abbondanza relativa (%)"
-  ) +
-  scale_fill_manual(values = c("T0" = "skyblue", "T1" = "tomato")) +
+# se non l'hai già, installa ggrepel
+
+install.packages("ggrepel")
+library(vegan)
+library(ggplot2)
+library(ggrepel)
+
+# dopo aver calcolato `nmds` e preparato `punti_nmds`
+
+ggplot(punti_nmds, aes(x = MDS1, y = MDS2, color = Tipo)) +
+  geom_point(size = 4, alpha = 0.8) +
+  stat_ellipse(aes(fill = Tipo), geom = "polygon", alpha = 0.2, color = NA) +
+  # qui aggiungiamo le etichette, evitando sovrapposizioni
+  geom_text_repel(aes(label = Plot),
+                  size = 3,              # dimensione del testo
+                  max.overlaps = 20,     # quanti overlap tentare di risolvere
+                  box.padding  = 0.3,    # spazio intorno a etichetta
+                  point.padding= 0.2) +  # spazio intorno al punto
+  scale_color_manual(values = c("T0" = "skyblue", "T1" = "tomato")) +
+  labs(title = "Ordination plot (NMDS) – Forme biologiche",
+       x = "Dimensione 1 (NMDS1)", 
+       y = "Dimensione 2 (NMDS2)") +
   theme_minimal()
 
 
