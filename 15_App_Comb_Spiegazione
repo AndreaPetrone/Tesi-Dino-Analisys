@@ -3,30 +3,29 @@
 # Analisi combinatoria: logica generale
   1. NON raggruppare i plot originali.
     - Ogni survey plot deve essere confrontato singolarmente con uno solo dei suoi resurvey replicati (es. "S_1.1" con "R_1.1a", "S_1.1" con "R_1.1b", ecc.)
-    - Non usare "P_1", "P_2", ecc. per raggruppare i plot.
   2. Estrazione casuale e ripetizione
-    - Per ogni *coppia survey-resurvey* si estrae **casualmente** un plot tra i resurvey.
-    - Questo viene fatto **100 volte** (o altro numero arbitrario) → ogni volta si calcolano α, β, γ diversità.
-    - Alla fine si calcola la **media** e la **distribuzione** dei risultati → da qui grafico a barre e confronto con approccio conservativo.
+    - Per ogni coppia survey-resurvey si estrae casualmente un plot tra i resurvey.
+    - Questo viene fatto 100 volte (o altro numero arbitrario) → ogni volta si calcolano α, β, γ diversità.
+    - Alla fine si calcola la media e la distribuzione dei risultati → da qui grafico a barre e confronto con approccio conservativo.
 
 # Approccio nel paper (Lelli et al., 2021)
-  - Per ogni plot originale, selezionano **una replica** casuale tra i tre disponibili.
-  - Ripetono il processo **1.000 volte**.
+  - Per ogni plot originale, selezionano una replica casuale tra i tre disponibili.
+  - Ripetono il processo 1.000 volte.
   - Calcolano α, β e γ diversità a ogni iterazione.
   - Producono distribuzioni di densità, boxplot, medie ± sd, ecc.
 
 # per la mia analisi: 
-  - estrae **una replica casuale** per ogni gruppo (es. `R_1.1a`, `R_1.1b`, `R_1.1c`)
+  - estrae una replica casuale per ogni gruppo (es. `R_1.1a`, `R_1.1b`, `R_1.1c`)
   - confronta con il relativo survey (`S_1.1`)
   - ripete il processo 100 volte
   - raccoglie α-diversità (numero di specie), β-diversità (es. Bray-Curtis), γ-diversità (numero totale di specie)
   -   costruisce boxplot dei risultati
 
 # il prossimo passo sarà iniziare l'alpha diversità combinatoria 
-  1. un **gruppo di associazione survey-resurvey** (es. `S_1.1` → `R_1.1a`, `R_1.1b`, `R_1.1c`)
-  2. una **funzione che estrae a caso** una replica per ciascun survey plot
-  3. un **loop (o replicate)** che ripete il processo 100 volte
-  4. un **boxplot** finale o altro grafico 
+  1. un gruppo di associazione survey-resurvey (es. `S_1.1` → `R_1.1a`, `R_1.1b`, `R_1.1c`)
+  2. una funzione che estrae a caso una replica per ciascun survey plot
+  3. un loop (o replicate) che ripete il processo 100 volte
+  4. un boxplot finale o altro grafico 
 
 # Cosa intendo per "gruppi di associazione"? Liste o insiemi che associano survey con uno dei suoi resurvey
   Sono già stati creati nel foglio di appunti 4_Sotto_Matrici
