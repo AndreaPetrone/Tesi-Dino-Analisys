@@ -64,7 +64,7 @@ for (nome_plot in names(gruppi_plot)) {
 # Unisci tutti i risultati: Combina tutti i risultati della lista risultati_alpha in un unico dataframe.
 alpha_combinatoria_df <- do.call(rbind, risultati_alpha)
 
-# Calcola media e sd per survey e resurvey
+# Calcola media e deviazione standard per ciascun Plot e Tipo
 alpha_summary <- alpha_combinatoria_df %>%
   group_by(Plot, Tipo) %>%
   summarise(
@@ -72,6 +72,19 @@ alpha_summary <- alpha_combinatoria_df %>%
     sd = sd(Alpha),
     .groups = "drop"
   )
+
+# Fattore Plot con P12 alla fine
+plot_order <- c("P1", "P1.1", "P1.2", "P1.3",
+                "P2", "P2.1", "P2.2", "P2.3",
+                "P3.1", "P3.2", "P3.3", "P12")
+
+# Ordina fattori
+alpha_summary <- alpha_summary %>%
+  mutate(
+    Plot = factor(Plot, levels = plot_order),
+    Tipo = factor(Tipo, levels = c("Survey", "Resurvey"))
+  ) %>%
+  arrange(Plot, Tipo)  # Ordina i dati effettivi
 
 # Grafico con barre e barre d’errore
 ggplot(alpha_summary, aes(x = Plot, y = media, fill = Tipo)) +
@@ -97,7 +110,10 @@ ggplot(alpha_summary, aes(x = Plot, y = media, fill = Tipo)) +
     - la variabilità tra resurvey dello stesso plot
     - quanto può cambiare la diversità in base a quale replica è selezionata.
 
-# Dopo l’estrazione iterata, non si doveva fare la media?
-  - Sì e no — dipende da cosa vuoi visualizzare:
-    - Per il boxplot: non si fa la media, si mostra la distribuzione completa → utile per vedere la variabilità.
-    - Per un confronto sintetico finale (es. in una tabella o altro grafico): puoi calcolare la media e la deviazione standard dei 100 valori di α dei resurvey.
+# nel nostro caso per visualizzare meglio i valori è stato fatto un barplot
+  - Barre d’errore nere = deviazione standard (SD) sul valore medio del Resurvey
+  - Se la barra rossa è più bassa → potenziale perdita di diversità
+  - Se la barra rossa è più alta → potenziale aumento di diversità
+  - Se le barre sono simili → diversità stabile
+  - Alcune SD alte (es. P3.1, P12) suggeriscono variabilità interna elevata tra i 3 rilievi resurvey usati → cambiamenti locali o instabilità.
+
