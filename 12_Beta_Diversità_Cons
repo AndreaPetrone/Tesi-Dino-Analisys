@@ -25,6 +25,11 @@ S_1     S_1.1     S_1.2     S_1.3      S_12       S_2     S_2.1     S_2.2     S_
 
 # Il risultato (es. 0.669, 0.577, 0.816, ecc.) rappresenta quanto è cambiata la composizione delle specie in quel plot → più vicino a 1 = più cambiata (più turnover)
 
+# Rinomina le colonne come P_*
+labels <- gsub("^S_", "P_", colnames(T0))
+
+# Sposta 'P_12' in fondo
+
 # Calcola la media
 mean_beta <- mean(bray_beta)
 mean_beta
@@ -43,12 +48,12 @@ sd_beta
 # grafico beta diversità -> barplot: cambiamento ciascun plot
 
 barplot(bray_beta,
+        names.arg = labels,
         col = "skyblue",
         main = "Beta diversità (Bray-Curtis) per ciascun plot",
         ylab = "Dissimilarità",
         las = 2)
-
-abline(h = mean_beta, col = "red", lty = 2) # riga che indica la media
+abline(h = mean_beta, col = "red", lty = 2) # indica media
 
 # La deviazione standard misura quanto i singoli valori si discostano dalla media.
 # valore di circa 0.18 indica che c'è una discreta variabilità tra i plot
