@@ -11,7 +11,7 @@
 P1.2_conservativo <- matrice_specie_plot[, c("S_1.2", "R_1.2b")]
 # Fai lo stesso per ogni plot.
 
-# SCELTA DEL PLOT PIU' DIS-SIMILE 
+# SCELTA DEL PLOT PIU' SIMILE 
 
 # P1
 diss_R1; sim_R1
