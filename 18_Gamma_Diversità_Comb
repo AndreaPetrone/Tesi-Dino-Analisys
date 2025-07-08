@@ -53,7 +53,10 @@ gamma_T1 <- 71
 # --- CREAZIONE GRAFICO CONFRONTO ---
 
 df_gamma <- data.frame(
-  Metodo = c("T0 (Survey)", "T1 (Conservativo)", "T1 (Combinatorio)"),
+  Metodo = factor(
+    c("T0 (Survey)", "T1 (Conservativo)", "T1 (Combinatorio)"),
+    levels = c("T0 (Survey)", "T1 (Conservativo)", "T1 (Combinatorio)")  # Ordine desiderato
+  ),
   Gamma = c(gamma_T0, gamma_T1, media_gamma_comb),
   SD = c(0, 0, sd_gamma_comb)
 )
