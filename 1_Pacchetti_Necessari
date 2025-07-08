@@ -11,6 +11,7 @@ install.packages("FD")             # Per tratti funzionali (utile anche con form
 install.packages("ggplot2")        # Per grafici base e personalizzati
 install.packages("patchwork")      # Per combinare più grafici ggplot
 install.packages("pheatmap")       # Per heatmap di abbondanza o copertura
+install.packages("ggrepel")        # per NMDS
 
 #  Utili opzionali
 install.packages("janitor")        # Per pulizia tabelle
