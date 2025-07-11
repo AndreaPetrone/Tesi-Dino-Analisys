@@ -46,30 +46,25 @@ ggplot(punti_nmds, aes(x = MDS1, y = MDS2, color = Tipo)) +
   theme_minimal()
 
 # spiegazione del grafico:
-# Che cosa rappresenta il grafico NMDS?
-1. Ogni punto rappresenta un plot (un’unità di campionamento).
-2. L’asse x (NMDS1) e l’asse y (NMDS2) non hanno un’unità fisica: sono dimensioni astratte che riflettono la distanza compositiva tra i plot.
-3. La distanza tra i punti rappresenta quanto i plot differiscono tra loro in base alla composizione di forme biologiche (Ch, G, H, P, T).
-   Più vicini = composizione simile
-   Più lontani = composizione diversa
-# Colori ed ellissi
-  Blu (T0): dati del primo survey.
-  Rosso (T1): dati del resurvey.
-  Le ellissi rappresentano una sorta di "area media" che racchiude la distribuzione dei plot per ciascun tempo.
-# Come si interpreta questo grafico?
-  Sovrapposizione ellissi T0 e T1:
-  - Le ellissi si sovrappongono in gran parte, quindi non si osserva una netta separazione tra i due gruppi.
-  - Questo suggerisce che la composizione delle forme biologiche nei plot non è molto cambiata tra T0 e T1 (almeno visivamente).
-  Distribuzione dei punti:
-  - I plot T0 e T1 sono mescolati tra loro nello spazio NMDS.
-  - Anche questo indica assenza di una chiara distinzione compositiva tra epoche.
-  Outlier:
-  - Alcuni punti (specialmente T1 in basso a destra e T0 in basso a sinistra) si allontanano dalle ellissi.
-  - Potrebbero rappresentare plot con composizioni molto particolari o influenzati da errori/peculiarità locali.
+# Questo grafico rappresenta un'ordinazione NMDS (Non-Metric Multidimensional Scaling) della composizione in forme biologiche nei tuoi plot, nei due tempi `T0` (Survey) e `T1` (Resurvey). Ti spiego passo per passo cosa ci mostra:
+# Ogni pallino è un rilievo (plot × tempo), con:
+  Colori:
+  Azzurro (T0) = survey iniziale
+  Rosso (T1) = resurvey (una delle iterazioni combinatorie)
+  Etichette: i nomi delle colonne della matrice (es. `S_3.3`, `R_1.1b`).
+# Dimensione 1 (NMDS1) e Dimensione 2 (NMDS2) sono le due dimensioni principali lungo cui i rilievi sono proiettati per rappresentare dissimilarità compositive.
+# Distanza tra punti: più due rilievi sono vicini, più simili sono nella composizione di forme biologiche. Se due punti sono lontani, le loro comunità floristiche differiscono.
+# Ellissi:
+  Sono ellissi di confidenza che racchiudono i punti di ciascun gruppo (`T0` e `T1`) e mostrano la variabilità interna.
+  Si basano sulle coordinate NMDS → non hanno interpretazione diretta in metri ecologici, ma aiutano a visualizzare il raggruppamento.
 
+# INTERPRETAZIONE
+# punti rossi (T1) tendono a essere più concentrati al centro, mentre i blu (T0) sono più dispersi, anche se vi è sovrapposizione evidente.
+# Alcuni plot di T0 (es. `S_12`, `S_3.3`) e T1 (es. `R_12c`) sono outlier, ossia lontani dalla nube principale → potrebbero avere una composizione in forme biologiche molto diversa dagli altri.
+# L’ampia sovrapposizione delle ellissi indica che le composizioni tra T0 e T1 non sono nettamente distinte, il che coincide con il risultato della PERMANOVA: nessuna differenza statisticamente significativa (p = 0.211).
 
-# Il test dice che non ci sono differenze significative nella composizione delle forme biologiche tra i due gruppi (T0 e T1).
-# Il p-value (0.211) è maggiore di 0.05 → le differenze che vedi nel grafico NMDS potrebbero essere dovute al caso.
-# Il grafico NMDS ti mostra visivamente le somiglianze/differenze tra i plot.
-# La PERMANOVA ti dice se le distanze tra i gruppi (T0 vs T1) sono statisticamente rilevanti.
-# In questo caso, no: nonostante una lieve separazione visiva, la differenza non è significativa.
+# CONCLUSIONI
+# La NMDS mostra che non c’è separazione netta tra T0 e T1 in termini di forme biologiche → supporta la PERMANOVA.
+# Potresti segnalare:
+"Lievi differenze nella composizione, ma con forte sovrapposizione."
+"Trend di avvicinamento tra alcune forme, ma non statisticamente significativi."
