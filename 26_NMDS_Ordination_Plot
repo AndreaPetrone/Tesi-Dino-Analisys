@@ -62,9 +62,22 @@ ggplot(punti_nmds, aes(x = MDS1, y = MDS2, color = Tipo)) +
 # punti rossi (T1) tendono a essere più concentrati al centro, mentre i blu (T0) sono più dispersi, anche se vi è sovrapposizione evidente.
 # Alcuni plot di T0 (es. `S_12`, `S_3.3`) e T1 (es. `R_12c`) sono outlier, ossia lontani dalla nube principale → potrebbero avere una composizione in forme biologiche molto diversa dagli altri.
 # L’ampia sovrapposizione delle ellissi indica che le composizioni tra T0 e T1 non sono nettamente distinte, il che coincide con il risultato della PERMANOVA: nessuna differenza statisticamente significativa (p = 0.211).
+# Vettori delle forme biologiche
+  Le frecce indicano quali forme biologiche sono più associate a certe direzioni dello spazio ordinale:
+    Ch (Camefite): orientate verso l’estrema destra → più presenti in alcuni plot T0 (es. S_12).
+    T (Fanerofite): associate a T1 → probabilmente aumentate nel tempo.
+    H (Emicriptofite): distribuite verso l’alto → presenti in entrambi i tempi ma leggermente più in T1.
+    P (Terofite) e G (Geofite): distribuite verso sinistra o in basso → suggeriscono presenza sia in T0 che in T1.
+
+# Forza dei vettori
+  La lunghezza della freccia indica quanto fortemente quella forma biologica è correlata con la variazione nei dati:
+  Ch e T hanno frecce più lunghe → maggiore influenza nella separazione dei plot.
+  Le altre (G, P, H) hanno frecce più corte → effetto meno marcato.
 
 # CONCLUSIONI
 # La NMDS mostra che non c’è separazione netta tra T0 e T1 in termini di forme biologiche → supporta la PERMANOVA.
 # Potresti segnalare:
 "Lievi differenze nella composizione, ma con forte sovrapposizione."
 "Trend di avvicinamento tra alcune forme, ma non statisticamente significativi."
+# L’analisi NMDS mostra una parziale separazione tra i due tempi, ma anche una forte sovrapposizione, indicando che i cambiamenti nelle forme biologiche sono presenti ma non netti.
+# Alcune forme (es. Camefite) risultano più associate a rilievi storici, mentre Fanerofite tendono ad aumentare nei rilievi attuali, forse in risposta a cambiamenti ambientali o disturbo antropico.
