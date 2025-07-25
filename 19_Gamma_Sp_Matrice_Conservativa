@@ -1,0 +1,64 @@
+CONFRONTO SPECIE SURVEY T0 VS RESURVEY T1 E VISUALIZZAZIONE DELLA MATRICE CONSERVATIVA CON EULERO
+
+install.packages("eulerr")
+library(eulerr)
+
+# Estrai le colonne dei survey (T0) e dei resurvey (T1)
+survey_cols <- grep("^S_", colnames(matrice_conservativa))
+resurvey_cols <- grep("^R_", colnames(matrice_conservativa))
+
+# Calcola quali specie sono presenti (almeno una volta) nei due tempi
+specie_T0 <- rownames(matrice_conservativa)[rowSums(matrice_conservativa[, survey_cols]) > 0]
+specie_T1 <- rownames(matrice_conservativa)[rowSums(matrice_conservativa[, resurvey_cols]) > 0]
+
+# 1. Specie perse
+specie_perse <- setdiff(specie_T0, specie_T1)
+
+# 2. Specie condivise
+specie_condivise <- intersect(specie_T0, specie_T1)
+
+# 3. Specie nuove a T1
+specie_nuove <- setdiff(specie_T1, specie_T0)
+
+# Mostra i risultati
+cat("Specie perse (presenti a T0 ma assenti a T1):\n")
+print(specie_perse)
+
+cat("\nSpecie condivise:\n")
+print(specie_condivise)
+
+cat("\nSpecie nuove (solo in T1):\n")
+print(specie_nuove)
+
+cat("\nTotale specie T0:", length(specie_T0),
+    "\nTotale specie T1:", length(specie_T1),
+    "\nPerse:", length(specie_perse),
+    "\nCondivise:", length(specie_condivise),
+    "\nNuove:", length(specie_nuove), "\n")
+
+# visualiziamo con DIAGRAMMA A BARRE
+
+# Data frame con i tre gruppi
+df_specie <- data.frame(
+  Categoria = c("Solo T0", "Condivise", "Solo T1"),
+  Conteggio = c(length(specie_perse),
+                length(specie_condivise),
+                length(specie_nuove))
+)
+
+# Ordine delle categorie
+df_specie$Categoria <- factor(df_specie$Categoria, levels = c("Solo T0", "Condivise", "Solo T1"))
+
+# Barplot con etichette
+ggplot(df_specie, aes(x = Categoria, y = Conteggio, fill = Categoria)) +
+  geom_bar(stat = "identity", width = 0.6) +
+  geom_text(aes(label = Conteggio), vjust = -0.5, size = 4) +
+  scale_fill_manual(values = c("Solo T0" = "skyblue",
+                               "Condivise" = "grey80",
+                               "Solo T1" = "tomato")) +
+  labs(title = "Specie tra Survey (T0) e Resurvey (T1)",
+       x = "", y = "Numero di specie") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+  
