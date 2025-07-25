@@ -71,3 +71,29 @@ ggplot(df_gamma, aes(x = Metodo, y = Gamma, fill = Metodo)) +
   labs(title = "Gamma diversità: confronto tra epoche e approcci",
        y = "Numero di specie", x = "") +
   theme_minimal()
+
+# T0 (Survey) – Approccio Conservativo
+  Abbiamo considerato tutti i plot "S_" (cioè i rilievi originali).
+  Una specie è contata se compare almeno in un plot (rowSums(...) > 0).
+  È la gamma diversità reale osservata al tempo iniziale.
+  Valore ottenuto: 79 specie.
+
+# T1 (Resurvey) – Approccio Conservativo
+  Abbiamo considerato tutti i plot "R_", ma solo una replica per ciascun plot (es. R_1.1c, R_2.1b, ecc.).
+  Anche qui, una specie è contata se compare almeno in un plot selezionato.
+  Essendo un solo resurvey per plot, è possibile che alcune specie rare (che erano nei survey) non siano riapparse → perdita di specie.
+  Valore ottenuto: 71 specie.
+
+ # T1 – Approccio Combinatorio
+  In ciascuna delle 100 iterazioni:
+  Si estrae una replica casuale per ogni plot.
+  Si calcola il numero totale di specie presenti almeno in uno di questi plot.
+  Alla fine, si ottiene una media ± SD della gamma diversità su 100 combinazioni casuali.
+  È quindi una stima media di quanti taxa possiamo aspettarci da un “resurvey casuale” dell’isola.
+
+# È normale che questo valore sia inferiore a T0, per due motivi:
+  Perdita reale di specie (estinzione locale, non ricomparse).
+  Effetto campionamento: se una specie era poco abbondante o localizzata, c’è meno probabilità che venga catturata in una singola replica.
+
+# Conclusione
+  Il calo della gamma diversità da T0 a T1 è atteso sia nei dati osservati (conservativo) che in quelli stimati (combinatorio).
