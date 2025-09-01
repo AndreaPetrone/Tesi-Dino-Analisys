@@ -1,0 +1,899 @@
+#################################################################################################################
+##### SCRIPT PER ANALISI VEGETAZIONE ISOLA DI DINO - RESMILE PROJECT - TESI MAGISTRALE ###########################
+##########################################################################################################
+
+# Carica i pacchetti
+library(tidyverse)
+library(readxl)
+library(vegan)
+library(betapart)
+library(FD)
+library(ggplot2)
+library(patchwork)
+library(pheatmap)
+
+# set working directory 
+
+setwd("C:/Users/Utente/Desktop/tesi")
+getwd()
+
+# Lettura file excel 
+
+dino_raw <- read_excel("Dino uniformato (survey e resurvey) 1 AC sistemato FS-VB.xlsx", skip = 2)
+
+header1 <- read_excel("Dino uniformato (survey e resurvey) 1 AC sistemato FS-VB.xlsx", range = "A1:AZ1", col_names = FALSE)
+header2 <- read_excel("Dino uniformato (survey e resurvey) 1 AC sistemato FS-VB.xlsx", range = "A2:AZ2", col_names = FALSE)
+
+new_names <- paste0(as.character(header2[1,]), "_", as.character(header1[1,]))
+new_names <- make.unique(new_names)  # Rende tutti i nomi univoci
+new_names[1:2] <- c("Famiglia", "Specie")
+colnames(dino_raw) <- new_names
+
+converti_valore <- function(x) {
+  suppressWarnings(  # evita messaggi per ogni coercizione
+    case_when(
+      x == "r" ~ 0.2,
+      x == "+" ~ 0.5,
+      x == "" | is.na(x) ~ 0,
+      grepl("^[0-9.]+$", x) ~ as.numeric(x),
+      TRUE ~ NA_real_
+    )
+  )
+}
+dati_convertiti <- dino_raw %>%
+  mutate(across(-c(Famiglia, Specie), ~ converti_valore(as.character(.))))
+
+# Isoliamo solo le colonne con dati numerici per i plot
+matrice_specie_plot <- dati_convertiti %>%
+  select(-Famiglia, -Specie) %>%
+  as.matrix()  # Serve formato matrice per vegan
+rownames(matrice_specie_plot) <- dati_convertiti$Specie
+
+matrice_specie_plot # per visualizzarla tutta
+View(matrice_specie_plot) # più ordinata
+
+matrice_specie_plot <- dati_convertiti %>%
+  select(-Famiglia, -Specie) %>%  # esclude colonne descrittive
+  as.matrix()                     # converte in matrice numerica
+rownames(matrice_specie_plot) <- dati_convertiti$Specie
+
+matrice_specie_plot
+
+colnames(matrice_specie_plot)
+
+# Plot 1: S1 vs R1
+P1 <- matrice_specie_plot[, c("S_1", "R_1")]
+
+# Plot 2: S2 vs R2
+P2 <- matrice_specie_plot[, c("S_2", "R_2")]
+
+# Plot 1.1: S1.1 vs R1.1a, b, c
+P1.1 <- matrice_specie_plot[, c("S_1.1", "R_1.1a", "R_1.1b", "R_1.1c")]
+
+# Plot 1.2: S1.2 vs R1.2a, b, c
+P1.2 <- matrice_specie_plot[, c("S_1.2", "R_1.2a", "R_1.2b", "R_1.2c")]
+
+# Plot 1.3: S1.3 vs R1.3a, b, c
+P1.3 <- matrice_specie_plot[, c("S_1.3", "R_1.3a", "R_1.3b", "R_1.3c")]
+
+# Plot 2.1: S2.1 vs R2.1a, b, c
+P2.1 <- matrice_specie_plot[, c("S_2.1", "R_2.1a", "R_2.1b", "R_2.1c")]
+
+# Plot 2.2: S2.2 vs R2.2a, b, c
+P2.2 <- matrice_specie_plot[, c("S_2.2", "R_2.2a", "R_2.2b", "R_2.2c")]
+
+# Plot 2.3: S2.3 vs R2.3a, b, c
+P2.3 <- matrice_specie_plot[, c("S_2.3", "R_2.3a", "R_2.3b", "R_2.3c")]
+
+# Plot 3.1: S3.1 vs R3.1a, b, c
+P3.1 <- matrice_specie_plot[, c("S_3.1", "R_3.1a", "R_3.1b", "R_3.1c")]
+
+# Plot 3.2: S3.2 vs R3.2
+P3.2 <- matrice_specie_plot[, c("S_3.2", "R_3.2")]
+
+# Plot 3.3: S3.3 vs R3.3
+P3.3 <- matrice_specie_plot[, c("S_3.3", "R_3.3")]
+
+# Plot 12: S12 vs R12a, b, c
+P12 <- matrice_specie_plot[, c("S_12", "R_12a", "R_12b", "R_12c")]
+
+############################# APPROCCIO CONSERVATIVO ###############################################
+
+############################## similarità: Bray Curtis ######################################################
+
+P1 <- matrice_specie_plot[, c("S_1", "R_1")] # estrai la sotto matrice
+bray_P1 <- vegdist(t(P1), method = "bray") # calcolo la distanza di Bray-Curtis
+bray_P1
+
+P2 <- matrice_specie_plot[, c("S_2", "R_2")]
+bray_P2 <- vegdist(t(P2), method = "bray")
+bray_P2
+
+P1.1 <- matrice_specie_plot[, c("S_1.1", "R_1.1a", "R_1.1b", "R_1.1c")]
+bray_P1.1 <- vegdist(t(P1.1), method = "bray")
+bray_P1.1
+
+bray_P1.1_matrix <- as.matrix(bray_P1.1)
+bray_P1.1_matrix["S_1.1", "R_1.1a"]
+bray_P1.1_matrix["S_1.1", "R_1.1b"]
+bray_P1.1_matrix["S_1.1", "R_1.1c"]
+
+P1.2 <- matrice_specie_plot[, c("S_1.2", "R_1.2a", "R_1.2b", "R_1.2c")]
+bray_P1.2 <- vegdist(t(P1.2), method = "bray")
+bray_P1.2
+
+bray_P1.2_matrix <- as.matrix(bray_P1.2)
+bray_P1.2_matrix["S_1.2", "R_1.2a"]
+bray_P1.2_matrix["S_1.2", "R_1.2b"]
+bray_P1.2_matrix["S_1.2", "R_1.2c"]
+
+P1.3 <- matrice_specie_plot[, c("S_1.3", "R_1.3a", "R_1.3b", "R_1.3c")]
+bray_P1.3 <- vegdist(t(P1.3), method = "bray")
+bray_P1.3
+
+bray_P1.3_matrix <- as.matrix(bray_P1.3)
+bray_P1.3_matrix["S_1.3", "R_1.3a"] # estrazione dei valori di dissimilarità
+bray_P1.3_matrix["S_1.3", "R_1.3b"]
+bray_P1.3_matrix["S_1.3", "R_1.3c"]
+
+P2.1 <- matrice_specie_plot[, c("S_2.1", "R_2.1a", "R_2.1b", "R_2.1c")]
+bray_P2.1 <- vegdist(t(P2.1), method = "bray")
+bray_P2.1
+
+bray_P2.1_matrix <- as.matrix(bray_P2.1)
+bray_P2.1_matrix["S_2.1", "R_2.1a"] 
+bray_P2.1_matrix["S_2.1", "R_2.1b"]
+bray_P2.1_matrix["S_2.1", "R_2.1c"]
+
+# Plot 2.2
+P2.2 <- matrice_specie_plot[, c("S_2.2", "R_2.2a", "R_2.2b", "R_2.2c")]
+bray_P2.2 <- vegdist(t(P2.2), method = "bray")
+bray_P2.2
+
+bray_P2.2_matrix <- as.matrix(bray_P2.2)
+bray_P2.2_matrix["S_2.2", "R_2.2a"] 
+bray_P2.2_matrix["S_2.2", "R_2.2b"]
+bray_P2.2_matrix["S_2.2", "R_2.2c"]
+
+# Plot 2.3
+P2.3 <- matrice_specie_plot[, c("S_2.3", "R_2.3a", "R_2.3b", "R_2.3c")]
+bray_P2.3 <- vegdist(t(P2.3), method = "bray")
+bray_P2.3
+
+bray_P2.3_matrix <- as.matrix(bray_P2.3)
+bray_P2.3_matrix["S_2.3", "R_2.3a"] 
+bray_P2.3_matrix["S_2.3", "R_2.3b"]
+bray_P2.3_matrix["S_2.3", "R_2.3c"]
+
+P3.1 <- matrice_specie_plot[, c("S_3.1", "R_3.1a", "R_3.1b", "R_3.1c")]
+bray_P3.1 <- vegdist(t(P3.1), method = "bray")
+bray_P3.1
+
+bray_P3.1_matrix <- as.matrix(bray_P3.1)
+bray_P3.1_matrix["S_3.1", "R_3.1a"] 
+bray_P3.1_matrix["S_3.1", "R_3.1b"]
+bray_P3.1_matrix["S_3.1", "R_3.1c"]
+
+# Plot 3.2 (1 solo resurvey)
+P3.2 <- matrice_specie_plot[, c("S_3.2", "R_3.2")]
+bray_P3.2 <- vegdist(t(P3.2), method = "bray")
+bray_P3.2
+
+# Plot 3.3 (1 solo resurvey)
+P3.3 <- matrice_specie_plot[, c("S_3.3", "R_3.3")]
+bray_P3.3 <- vegdist(t(P3.3), method = "bray")
+bray_P3.3
+
+P12 <- matrice_specie_plot[, c("S_12", "R_12a", "R_12b", "R_12c")]
+bray_P12 <- vegdist(t(P12), method = "bray")
+bray_P12
+
+bray_P12_matrix <- as.matrix(bray_P12)
+bray_P12_matrix["S_12", "R_12a"] 
+bray_P12_matrix["S_12", "R_12b"]
+bray_P12_matrix["S_12", "R_12c"]
+
+# calcolo valori di similarità e dissimilarità per i vari plot
+# conversione in %
+
+diss_R1 <- bray_P1[1] * 100
+sim_R1  <- (1 - bray_P1[1]) * 100
+diss_R1
+sim_R1
+
+# Calcolo percentuali per ogni replica del plot P1.1
+diss_R1.1a <- bray_P1.1_matrix["S_1.1", "R_1.1a"] * 100
+sim_R1.1a  <- (1 - bray_P1.1_matrix["S_1.1", "R_1.1a"]) * 100
+
+diss_R1.1b <- bray_P1.1_matrix["S_1.1", "R_1.1b"] * 100
+sim_R1.1b  <- (1 - bray_P1.1_matrix["S_1.1", "R_1.1b"]) * 100
+
+diss_R1.1c <- bray_P1.1_matrix["S_1.1", "R_1.1c"] * 100
+sim_R1.1c  <- (1 - bray_P1.1_matrix["S_1.1", "R_1.1c"]) * 100
+
+# Visualizza i risultati
+diss_R1.1a; sim_R1.1a
+diss_R1.1b; sim_R1.1b
+diss_R1.1c; sim_R1.1c
+
+diss_R2 <- bray_P2[1] * 100 
+sim_R2  <- (1 - bray_P2[1]) * 100
+diss_R2
+
+# P1.2
+diss_R1.2a <- bray_P1.2_matrix["S_1.2", "R_1.2a"] * 100
+sim_R1.2a  <- (1 - bray_P1.2_matrix["S_1.2", "R_1.2a"]) * 100
+diss_R1.2a; sim_R1.2a
+
+diss_R1.2b <- bray_P1.2_matrix["S_1.2", "R_1.2b"] * 100
+sim_R1.2b  <- (1 - bray_P1.2_matrix["S_1.2", "R_1.2b"]) * 100
+diss_R1.2b; sim_R1.2b
+
+diss_R1.2c <- bray_P1.2_matrix["S_1.2", "R_1.2c"] * 100
+sim_R1.2c  <- (1 - bray_P1.2_matrix["S_1.2", "R_1.2c"]) * 100
+diss_R1.2c; sim_R1.2c
+
+# P1.3
+diss_R1.3a <- bray_P1.3_matrix["S_1.3", "R_1.3a"] * 100
+sim_R1.3a  <- (1 - bray_P1.3_matrix["S_1.3", "R_1.3a"]) * 100
+diss_R1.3a; sim_R1.3a
+
+diss_R1.3b <- bray_P1.3_matrix["S_1.3", "R_1.3b"] * 100
+sim_R1.3b  <- (1 - bray_P1.3_matrix["S_1.3", "R_1.3b"]) * 100
+diss_R1.3b; sim_R1.3b
+
+diss_R1.3c <- bray_P1.3_matrix["S_1.3", "R_1.3c"] * 100
+sim_R1.3c  <- (1 - bray_P1.3_matrix["S_1.3", "R_1.3c"]) * 100
+diss_R1.3c; sim_R1.3c
+
+# P2.1
+diss_R2.1a <- bray_P2.1_matrix["S_2.1", "R_2.1a"] * 100
+sim_R2.1a  <- (1 - bray_P2.1_matrix["S_2.1", "R_2.1a"]) * 100
+diss_R2.1a; sim_R2.1a
+
+diss_R2.1b <- bray_P2.1_matrix["S_2.1", "R_2.1b"] * 100
+sim_R2.1b  <- (1 - bray_P2.1_matrix["S_2.1", "R_2.1b"]) * 100
+diss_R2.1b; sim_R2.1b
+
+diss_R2.1c <- bray_P2.1_matrix["S_2.1", "R_2.1c"] * 100
+sim_R2.1c  <- (1 - bray_P2.1_matrix["S_2.1", "R_2.1c"]) * 100
+diss_R2.1c; sim_R2.1c
+
+# P2.2
+diss_R2.2a <- bray_P2.2_matrix["S_2.2", "R_2.2a"] * 100
+sim_R2.2a  <- (1 - bray_P2.2_matrix["S_2.2", "R_2.2a"]) * 100
+diss_R2.2a; sim_R2.2a
+
+diss_R2.2b <- bray_P2.2_matrix["S_2.2", "R_2.2b"] * 100
+sim_R2.2b  <- (1 - bray_P2.2_matrix["S_2.2", "R_2.2b"]) * 100
+diss_R2.2b; sim_R2.2b
+
+diss_R2.2c <- bray_P2.2_matrix["S_2.2", "R_2.2c"] * 100
+sim_R2.2c  <- (1 - bray_P2.2_matrix["S_2.2", "R_2.2c"]) * 100
+diss_R2.2c; sim_R2.2c
+
+# P2.3
+diss_R2.3a <- bray_P2.3_matrix["S_2.3", "R_2.3a"] * 100
+sim_R2.3a  <- (1 - bray_P2.3_matrix["S_2.3", "R_2.3a"]) * 100
+diss_R2.3a; sim_R2.3a
+
+diss_R2.3b <- bray_P2.3_matrix["S_2.3", "R_2.3b"] * 100
+sim_R2.3b  <- (1 - bray_P2.3_matrix["S_2.3", "R_2.3b"]) * 100
+diss_R2.3b; sim_R2.3b
+
+diss_R2.3c <- bray_P2.3_matrix["S_2.3", "R_2.3c"] * 100
+sim_R2.3c  <- (1 - bray_P2.3_matrix["S_2.3", "R_2.3c"]) * 100
+diss_R2.3c; sim_R2.3c
+
+# P3.1
+diss_R3.1a <- bray_P3.1_matrix["S_3.1", "R_3.1a"] * 100
+sim_R3.1a  <- (1 - bray_P3.1_matrix["S_3.1", "R_3.1a"]) * 100
+diss_R3.1a; sim_R3.1a
+
+diss_R3.1b <- bray_P3.1_matrix["S_3.1", "R_3.1b"] * 100
+sim_R3.1b  <- (1 - bray_P3.1_matrix["S_3.1", "R_3.1b"]) * 100
+diss_R3.1b; sim_R3.1b
+
+diss_R3.1c <- bray_P3.1_matrix["S_3.1", "R_3.1c"] * 100
+sim_R3.1c  <- (1 - bray_P3.1_matrix["S_3.1", "R_3.1c"]) * 100
+diss_R3.1c; sim_R3.1c
+
+# P3.2
+diss_R3.2 <- bray_P3.2[1] * 100
+sim_R3.2  <- (1 - bray_P3.2[1]) * 100
+diss_R3.2; sim_R3.2
+
+# P3.3
+diss_R3.3 <- bray_P3.3[1] * 100
+sim_R3.3  <- (1 - bray_P3.3[1]) * 100
+diss_R3.3; sim_R3.3
+
+# P12
+diss_R12a <- bray_P12_matrix["S_12", "R_12a"] * 100
+sim_R12a  <- (1 - bray_P12_matrix["S_12", "R_12a"]) * 100
+diss_R12a; sim_R12a
+
+diss_R12b <- bray_P12_matrix["S_12", "R_12b"] * 100
+sim_R12b  <- (1 - bray_P12_matrix["S_12", "R_12b"]) * 100
+diss_R12b; sim_R12b
+
+diss_R12c <- bray_P12_matrix["S_12", "R_12c"] * 100
+sim_R12c  <- (1 - bray_P12_matrix["S_12", "R_12c"]) * 100
+diss_R12c; sim_R12c
+
+########################## CREAZIONE MATRICE PER APPROCCIO CONSERVATIVO #################################
+
+# Crea la matrice conservativa selezionando solo survey e resurvey con dissimilarità più bassa
+matrice_conservativa <- matrice_specie_plot[, c(
+  "S_1", "R_1",       # un solo resurvey 
+  "S_1.1", "R_1.1c",
+  "S_1.2", "R_1.2b",
+  "S_1.3", "R_1.3b",
+  "S_2",   "R_2",      # un solo resurvey → lo tieni
+  "S_2.1", "R_2.1b",
+  "S_2.2", "R_2.2a",
+  "S_2.3", "R_2.3b",
+  "S_3.1", "R_3.1a",
+  "S_3.2", "R_3.2",
+  "S_3.3", "R_3.3",
+  "S_12",  "R_12c"
+)]
+
+view(matrice_conservativa)
+
+####################################### ALPHA DIVERSITA' CONSERVATIVA ###################################################
+
+alpha_diversity <- colSums(matrice_conservativa > 0)
+alpha_diversity
+
+# CONFRONTO SURVEY VS RESURVEY 
+
+survey_cols <- grep("^S_", colnames(matrice_conservativa))
+resurvey_cols <- grep("^R_", colnames(matrice_conservativa))
+
+alpha_T0 <- colSums(matrice_conservativa[, survey_cols] > 0)
+alpha_T0
+alpha_T1 <- colSums(matrice_conservativa[, resurvey_cols] > 0)
+alpha_T1
+
+#  MEDIA ALPHA PER T0 E T1:
+
+mean_T0 <- mean(alpha_T0)
+mean_T0
+mean_T1 <- mean(alpha_T1)
+mean_T1
+
+# codice per R per grafico -> boxplot
+
+# Raccogli i valori in un data frame ordinato per plot
+alpha_df <- data.frame(
+  plot = rep(1:length(alpha_T0), each = 2),
+  tempo = rep(c("T0", "T1"), times = length(alpha_T0)),
+  alpha = c(alpha_T0, alpha_T1)
+)
+
+ggplot(alpha_df, aes(x = tempo, y = alpha)) +
+  geom_boxplot(fill = c("skyblue", "tomato")) +
+  labs(
+    title = "Distribuzione della diversità alpha nei due tempi",
+    x = "Tempo",
+    y = "Numero di specie"
+  ) +
+  theme_minimal()
+
+############################### BETA DIVERSITA' CONSERVATIVA ###############################################
+
+# 1. Estrai e ordina le colonne Survey e Resurvey
+T0 <- matrice_conservativa[, grep("^S_", colnames(matrice_conservativa))]
+T1 <- matrice_conservativa[, grep("^R_", colnames(matrice_conservativa))]
+T0 <- T0[, order(colnames(T0))]
+T1 <- T1[, order(colnames(T1))]
+
+# 2. Calcola la dissimilarità Bray-Curtis per ogni coppia T0–T1
+bray_beta <- mapply(function(s, r) {
+  vegdist(rbind(s, r), method = "bray")
+}, as.data.frame(T0), as.data.frame(T1))
+
+# 3. Rinomina le colonne come P_*
+labels <- gsub("^S_", "P_", colnames(T0))
+
+# 4. Sposta 'P_12' in fondo
+idx_last <- which(labels == "P_12")
+labels <- c(labels[-idx_last], labels[idx_last])
+bray_beta <- c(bray_beta[-idx_last], bray_beta[idx_last])
+
+# 5. Calcola media e deviazione standard
+mean_beta <- mean(bray_beta)
+sd_beta <- sd(bray_beta)
+
+# 6. Grafico barplot aggiornato
+barplot(bray_beta,
+        names.arg = labels,
+        col = "skyblue",
+        main = "Beta diversità (Bray-Curtis) per ciascun plot",
+        ylab = "Dissimilarità",
+        las = 2)
+abline(h = mean_beta, col = "red", lty = 2)
+
+################################### GAMMA DIVERSITA' CONSERVATIVA #####################################################
+
+# Survey (T0): considera le specie con abbondanza > 0
+gamma_T0 <- sum(rowSums(matrice_conservativa[, survey_cols]) > 0)
+
+# Resurvey (T1)
+gamma_T1 <- sum(rowSums(matrice_conservativa[, resurvey_cols]) > 0)
+
+# Mostra i risultati
+gamma_T0; gamma_T1
+
+# Valori della gamma diversità
+gamma_values <- c(T0 = 79, T1 = 71)
+
+# Grafico a barre
+barplot(gamma_values,
+        col = c("forestgreen", "orange"),
+        main = "Gamma diversità (diversità totale)",
+        ylab = "Numero di specie",
+        ylim = c(0, max(gamma_values) + 10))
+
+# abline(h = mean(gamma_values), col = "red", lty = 2) 
+text(x = 1:2, y = gamma_values + 2, labels = gamma_values, cex = 1.1)
+
+
+######################### CODICE APPROCCIO COMBINATORIO ###############################
+
+########################## ALPHA DIVERSITA' COMBINATORIA ##############################################
+
+# Lista dei gruppi di plot e relative colonne (survey + possibili resurvey)
+gruppi_plot <- list(
+  P1 = c("S_1", "R_1"),
+  P2 = c("S_2", "R_2"),
+  P1.1 = c("S_1.1", "R_1.1a", "R_1.1b", "R_1.1c"),
+  P1.2 = c("S_1.2", "R_1.2a", "R_1.2b", "R_1.2c"),
+  P1.3 = c("S_1.3", "R_1.3a", "R_1.3b", "R_1.3c"),
+  P2.1 = c("S_2.1", "R_2.1a", "R_2.1b", "R_2.1c"),
+  P2.2 = c("S_2.2", "R_2.2a", "R_2.2b", "R_2.2c"),
+  P2.3 = c("S_2.3", "R_2.3a", "R_2.3b", "R_2.3c"),
+  P3.1 = c("S_3.1", "R_3.1a", "R_3.1b", "R_3.1c"),
+  P3.2 = c("S_3.2", "R_3.2"),
+  P3.3 = c("S_3.3", "R_3.3"),
+  P12 = c("S_12", "R_12a", "R_12b", "R_12c")
+)
+
+# Numero di iterazioni
+n_iterazioni <- 100
+
+# Lista per salvare i risultati
+risultati_alpha <- list()
+
+# sceglie un seme e lo fissa
+set.seed(123)
+
+# Loop su ciascun gruppo
+for (nome_plot in names(gruppi_plot)) {
+  colonne <- gruppi_plot[[nome_plot]]
+  survey_col <- colonne[1]
+  resurvey_cols <- colonne[-1]
+  
+  alpha_survey <- sum(matrice_specie_plot[, survey_col] > 0)
+  alpha_resurvey_iter <- numeric(n_iterazioni)
+  
+  for (i in 1:n_iterazioni) {
+    col_scelta <- if (length(resurvey_cols) > 1) sample(resurvey_cols, 1) else resurvey_cols
+    alpha_resurvey_iter[i] <- sum(matrice_specie_plot[, col_scelta] > 0)
+  }
+  
+  risultati_alpha[[nome_plot]] <- data.frame(
+    Plot = nome_plot,
+    Tipo = "Resurvey",
+    Alpha = alpha_resurvey_iter
+  )
+  
+  # Aggiungi il valore costante del survey
+  risultati_alpha[[paste0(nome_plot, "_survey")]] <- data.frame(
+    Plot = nome_plot,
+    Tipo = "Survey",
+    Alpha = rep(alpha_survey, n_iterazioni)
+  )
+}
+
+# Unisci tutti i risultati
+alpha_combinatoria_df <- do.call(rbind, risultati_alpha)
+
+# Calcola media e deviazione standard per ciascun Plot e Tipo
+alpha_summary <- alpha_combinatoria_df %>%
+  group_by(Plot, Tipo) %>%
+  summarise(
+    media = mean(Alpha),
+    sd = sd(Alpha),
+    .groups = "drop"
+  )
+
+# Fattore Plot con P12 alla fine
+plot_order <- c("P1", "P1.1", "P1.2", "P1.3",
+                "P2", "P2.1", "P2.2", "P2.3",
+                "P3.1", "P3.2", "P3.3", "P12")
+
+# Ordina fattori
+alpha_summary <- alpha_summary %>%
+  mutate(
+    Plot = factor(Plot, levels = plot_order),
+    Tipo = factor(Tipo, levels = c("Survey", "Resurvey"))
+  ) %>%
+  arrange(Plot, Tipo)  # Ordina i dati effettivi
+
+# Grafico con barre e barre d’errore
+ggplot(alpha_summary, aes(x = Plot, y = media, fill = Tipo)) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.9), width = 0.7) +
+  geom_errorbar(aes(ymin = media - sd, ymax = media + sd),
+                position = position_dodge(width = 0.9), width = 0.2) +
+  scale_fill_manual(values = c("Survey" = "lightblue", "Resurvey" = "salmon")) +
+  labs(title = "Alpha-diversità combinatoria (media ± SD)",
+       x = "Plot", y = "Numero di specie") +
+  theme_minimal()
+
+############################## BETA DIVERSITA' COMBINATORIA #############################################
+
+# Lista dei gruppi: survey + tutti i suoi resurvey
+gruppi_plot <- list(
+  P1 = c("S_1", "R_1"),
+  P2 = c("S_2", "R_2"),
+  P1.1 = c("S_1.1", "R_1.1a", "R_1.1b", "R_1.1c"),
+  P1.2 = c("S_1.2", "R_1.2a", "R_1.2b", "R_1.2c"),
+  P1.3 = c("S_1.3", "R_1.3a", "R_1.3b", "R_1.3c"),
+  P2.1 = c("S_2.1", "R_2.1a", "R_2.1b", "R_2.1c"),
+  P2.2 = c("S_2.2", "R_2.2a", "R_2.2b", "R_2.2c"),
+  P2.3 = c("S_2.3", "R_2.3a", "R_2.3b", "R_2.3c"),
+  P3.1 = c("S_3.1", "R_3.1a", "R_3.1b", "R_3.1c"),
+  P3.2 = c("S_3.2", "R_3.2"),
+  P3.3 = c("S_3.3", "R_3.3"),
+  P12 = c("S_12", "R_12a", "R_12b", "R_12c")
+)
+
+n_iterazioni <- 100
+risultati_beta <- list()
+
+for (nome_plot in names(gruppi_plot)) {
+  colonne <- gruppi_plot[[nome_plot]]
+  survey_col <- colonne[1]
+  resurvey_cols <- colonne[-1]
+  
+  beta_iter <- numeric(n_iterazioni)
+  
+  for (i in 1:n_iterazioni) {
+    col_scelta <- if (length(resurvey_cols) > 1) sample(resurvey_cols, 1) else resurvey_cols
+    sotto_mat <- matrice_specie_plot[, c(survey_col, col_scelta)]
+    dissim <- vegdist(t(sotto_mat), method = "bray")[1]
+    beta_iter[i] <- dissim
+  }
+  
+  risultati_beta[[nome_plot]] <- data.frame(
+    Plot = nome_plot,
+    Beta = beta_iter
+  )
+}
+
+# Unione risultati in un unico dataframe
+beta_combinatoria_df <- do.call(rbind, risultati_beta)
+
+# Calcola media e SD
+beta_summary <- beta_combinatoria_df %>%
+  group_by(Plot) %>%
+  summarise(media = mean(Beta), sd = sd(Beta), .groups = "drop")
+
+# Ordina i plot: P12 alla fine
+plot_order <- c("P1", "P1.1", "P1.2", "P1.3",
+                "P2", "P2.1", "P2.2", "P2.3",
+                "P3.1", "P3.2", "P3.3", "P12")
+
+# Applica l'ordine
+beta_summary <- beta_summary %>%
+  mutate(Plot = factor(Plot, levels = plot_order)) %>%
+  arrange(Plot)
+
+# Grafico
+ggplot(beta_summary, aes(x = Plot, y = media)) +
+  geom_bar(stat = "identity", fill = "lightgreen", width = 0.7) +
+  geom_errorbar(aes(ymin = media - sd, ymax = media + sd), width = 0.2) +
+  labs(title = "Beta-diversità combinatoria (Bray-Curtis)",
+       y = "Dissimilarità media (0 = simile, 1 = diverso)",
+       x = "Plot") +
+  theme_minimal()
+
+############################# GAMMA DIVERSITA' COMBINATORIA #################################
+
+# calcoliamo la gamma diversità combinatoria
+# la confrontiamo con la gamma dell'approccio conservativo con T0 e T1COMB/CONS
+
+# Lista dei gruppi (resurvey) – salta i survey
+gruppi_plot <- list(
+  P1 = "R_1",
+  P2 = "R_2",
+  P1.1 = c("R_1.1a", "R_1.1b", "R_1.1c"),
+  P1.2 = c("R_1.2a", "R_1.2b", "R_1.2c"),
+  P1.3 = c("R_1.3a", "R_1.3b", "R_1.3c"),
+  P2.1 = c("R_2.1a", "R_2.1b", "R_2.1c"),
+  P2.2 = c("R_2.2a", "R_2.2b", "R_2.2c"),
+  P2.3 = c("R_2.3a", "R_2.3b", "R_2.3c"),
+  P3.1 = c("R_3.1a", "R_3.1b", "R_3.1c"),
+  P3.2 = "R_3.2",
+  P3.3 = "R_3.3",
+  P12 = c("R_12a", "R_12b", "R_12c")
+)
+
+# Numero di iterazioni
+n_iterazioni <- 100
+gamma_iter <- numeric(n_iterazioni)
+
+for (i in 1:n_iterazioni) {
+  colonne_estratte <- c()  # inizializza
+  
+  for (colonne in gruppi_plot) {
+    if (length(colonne) > 1) {
+      scelta <- sample(colonne, 1)
+    } else {
+      scelta <- colonne
+    }
+    colonne_estratte <- c(colonne_estratte, scelta)
+  }
+  
+  sotto_matrice <- matrice_specie_plot[, colonne_estratte]
+  gamma_iter[i] <- sum(rowSums(sotto_matrice > 0) > 0)
+}
+
+# Calcola media e sd
+media_gamma_comb <- mean(gamma_iter)
+sd_gamma_comb <- sd(gamma_iter)
+
+# --- Valori conservativi già calcolati (T0 e T1) ---
+gamma_T0 <- 79
+gamma_T1 <- 71
+
+# --- CREAZIONE GRAFICO CONFRONTO ---
+
+df_gamma <- data.frame(
+  Metodo = factor(
+    c("T0 (Survey)", "T1 (Conservativo)", "T1 (Combinatorio)"),
+    levels = c("T0 (Survey)", "T1 (Conservativo)", "T1 (Combinatorio)")  # Ordine desiderato
+  ),
+  Gamma = c(gamma_T0, gamma_T1, media_gamma_comb),
+  SD = c(0, 0, sd_gamma_comb)
+)
+
+
+# Barplot alternativo
+ggplot(df_gamma, aes(x = Metodo, y = Gamma, fill = Metodo)) +
+  geom_bar(stat = "identity", width = 0.6) +
+  geom_errorbar(aes(ymin = Gamma - SD, ymax = Gamma + SD), width = 0.2) +
+  scale_fill_manual(values = c("T0 (Survey)" = "forestgreen",
+                               "T1 (Conservativo)" = "steelblue",
+                               "T1 (Combinatorio)" = "tomato")) +
+  labs(title = "Gamma diversità: confronto tra epoche e approcci",
+       y = "Numero di specie", x = "") +
+  theme_minimal()
+
+##########################################################################################################################
+
+######## confrontare le specie presenti a T0 (Survey) con quelle a T1 (Resurvey) ################
+
+# Estrai le colonne dei survey (T0) e dei resurvey (T1)
+survey_cols <- grep("^S_", colnames(matrice_conservativa))
+resurvey_cols <- grep("^R_", colnames(matrice_conservativa))
+
+# Calcola quali specie sono presenti (almeno una volta) nei due tempi
+specie_T0 <- rownames(matrice_conservativa)[rowSums(matrice_conservativa[, survey_cols]) > 0]
+specie_T1 <- rownames(matrice_conservativa)[rowSums(matrice_conservativa[, resurvey_cols]) > 0]
+
+# 1. Specie perse
+specie_perse <- setdiff(specie_T0, specie_T1)
+
+# 2. Specie condivise
+specie_condivise <- intersect(specie_T0, specie_T1)
+
+# 3. Specie nuove a T1
+specie_nuove <- setdiff(specie_T1, specie_T0)
+
+# Mostra i risultati
+cat("Specie perse (presenti a T0 ma assenti a T1):\n")
+print(specie_perse)
+
+cat("\nSpecie condivise:\n")
+print(specie_condivise)
+
+cat("\nSpecie nuove (solo in T1):\n")
+print(specie_nuove)
+
+cat("\nTotale specie T0:", length(specie_T0),
+    "\nTotale specie T1:", length(specie_T1),
+    "\nPerse:", length(specie_perse),
+    "\nCondivise:", length(specie_condivise),
+    "\nNuove:", length(specie_nuove), "\n")
+
+##### grafico prova PER SPECIE 
+
+# Data frame con i tre gruppi
+df_specie <- data.frame(
+  Categoria = c("Solo T0", "Condivise", "Solo T1"),
+  Conteggio = c(length(specie_perse),
+                length(specie_condivise),
+                length(specie_nuove))
+)
+
+# Ordine delle categorie
+df_specie$Categoria <- factor(df_specie$Categoria, levels = c("Solo T0", "Condivise", "Solo T1"))
+
+# Barplot con etichette
+ggplot(df_specie, aes(x = Categoria, y = Conteggio, fill = Categoria)) +
+  geom_bar(stat = "identity", width = 0.6) +
+  geom_text(aes(label = Conteggio), vjust = -0.5, size = 4) +
+  scale_fill_manual(values = c("Solo T0" = "skyblue",
+                               "Condivise" = "grey80",
+                               "Solo T1" = "tomato")) +
+  labs(title = "Specie tra Survey (T0) e Resurvey (T1)",
+       x = "", y = "Numero di specie") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+
+############################## ANALISI RAUNKIAER - FORME BIOLOGICHE #######################################################
+
+# 1. Caricamento dati
+dati_raunkiaer <- read.csv("matrice_specie_plot_Raunkiaer.csv", sep = ";", header = TRUE)
+
+# 2. Librerie
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+# 3. Oggetti chiave
+rownames(dati_raunkiaer) <- dati_raunkiaer$specie
+forme_biologiche <- dati_raunkiaer$forme_biologiche
+matrice_abbondanze <- dati_raunkiaer[, -(1:2)]
+
+# 4. Somma abbondanze per forma biologica e plot
+matrice_con_forme <- cbind(forma_bio = forme_biologiche, matrice_abbondanze)
+
+abb_per_forma_plot <- matrice_con_forme %>%
+  group_by(forma_bio) %>%
+  summarise(across(everything(), ~ sum(as.numeric(.), na.rm = TRUE)))
+
+# 5. Prepara dati per boxplot (una sola volta)
+abb_perc <- abb_per_forma_plot %>%
+  # Escludi colonne non informative (eventuali totali)
+  select(-matches("TOT")) %>%
+  # Elimina colonne con tutti NA o con nome strano
+  select(where(~!all(is.na(.)))) %>%
+  select(-matches("^NA_")) %>%
+  # Passaggio a formato lungo
+  pivot_longer(-forma_bio, names_to = "Plot", values_to = "Abb") %>%
+  # Etichetta T0 vs T1
+  mutate(Tipo = ifelse(grepl("^S_", Plot), "T0", "T1")) %>%
+  group_by(Plot) %>%
+  mutate(perc = 100 * Abb / sum(Abb, na.rm = TRUE)) %>%
+  ungroup() %>%
+  filter(is.finite(perc))
+
+# 6. Boxplot finale
+ggplot(abb_perc, aes(x = forma_bio, y = perc, fill = Tipo)) +
+  geom_boxplot(outlier.shape = 16, outlier.size = 2, position = position_dodge(0.9)) +
+  labs(
+    title = "Distribuzione dell'abbondanza relativa per forma biologica",
+    x = "Forma biologica",
+    y = "Abbondanza relativa (%)"
+  ) +
+  scale_fill_manual(values = c("T0" = "skyblue", "T1" = "tomato")) +
+  theme_minimal()
+
+############################### TEST DI SIGNIFICATIVITA' #######################################
+
+# Carica librerie necessarie
+library(dplyr)
+
+# Applichiamo il test per ciascuna forma biologica
+risultati_wilcoxon <- abb_perc %>%
+  group_by(forma_bio) %>%
+  summarise(
+    p_value = wilcox.test(perc ~ Tipo)$p.value
+  )
+
+# Aggiungiamo una colonna per indicare significatività
+risultati_wilcoxon <- risultati_wilcoxon %>%
+  mutate(significativo = ifelse(p_value < 0.05, "sì", "no"))
+
+# Mostra i risultati
+print(risultati_wilcoxon)
+
+################################# ANALISI MULTIVARIATA - PERMANOVA ######################################
+
+library(dplyr)
+library(tidyr)
+library(vegan)
+
+# Dati da abb_perc (che hai già preparato)
+# Passaggio a formato wide per creare la matrice "plot × forma biologica"
+dati_multivariati <- abb_perc %>%
+  select(forma_bio, Plot, perc, Tipo) %>%
+  pivot_wider(names_from = forma_bio, values_from = perc)
+
+# Verifica struttura
+head(dati_multivariati)
+
+# Matrice delle percentuali (escludi Plot e Tipo)
+matrice_perc <- dati_multivariati %>%
+  select(-Plot, -Tipo)
+
+# Variabile di raggruppamento
+gruppo <- dati_multivariati$Tipo
+
+# PERMANOVA
+set.seed(123)  # per rendere i risultati riproducibili
+risultato_permanova <- adonis2(matrice_perc ~ gruppo, method = "bray", permutations = 999)
+
+# Visualizza risultato
+print(risultato_permanova)
+
+
+##################################### ORDINATION PLOT ##############################################
+
+library(vegan)
+library(ggplot2)
+
+# La matrice già preparata:
+# dati_multivariati contiene: Plot | Tipo | Ch | G | H | P | T
+matrice_nmds <- dati_multivariati %>%
+  select(-Plot, -Tipo)  # solo abbondanze
+
+# NMDS (2 dimensioni, metodo Bray-Curtis)
+set.seed(123)
+nmds <- metaMDS(matrice_nmds, distance = "bray", k = 2, trymax = 100)
+
+# Controlla stress
+nmds$stress
+
+# Coord. NMDS + Tipo
+punti_nmds <- as.data.frame(nmds$points)
+punti_nmds$Tipo <- dati_multivariati$Tipo
+punti_nmds$Plot <- dati_multivariati$Plot
+
+# se non l'hai già, installa ggrepel
+
+# install.packages("ggrepel")
+
+library(ggrepel)
+
+# --- (dopo aver calcolato `nmds` e preparato `punti_nmds`) ---
+
+# HA LE FRECCE CON DIREZIONE FORME BIOLOGICHE
+
+# Calcolo NMDS come già fatto (già ottenuto nmds e matrice_perc)
+
+# Applichiamo envfit usando la stessa matrice delle forme biologiche
+fit <- envfit(nmds, matrice_perc, permutations = 999)
+
+# Converti le frecce in data frame per ggplot
+frecce <- as.data.frame(scores(fit, display = "vectors"))
+frecce$Forma <- rownames(frecce)
+
+# Grafico aggiornato
+ggplot(punti_nmds, aes(x = MDS1, y = MDS2, color = Tipo)) +
+  geom_point(size = 4, alpha = 0.8) +
+  stat_ellipse(aes(fill = Tipo), geom = "polygon", alpha = 0.2, color = NA) +
+  geom_text_repel(aes(label = Plot),
+                  size = 2.8,
+                  max.overlaps = 20,
+                  box.padding  = 0.4,
+                  point.padding= 0.3,
+                  fontface = "bold",
+                  color = "black",
+                  bg.color = "white",
+                  bg.r = 0.20) +
+  geom_segment(data = frecce,
+               aes(x = 0, y = 0, xend = NMDS1, yend = NMDS2),
+               arrow = arrow(length = unit(0.3, "cm")), color = "darkgrey") +
+  geom_text(data = frecce, aes(x = NMDS1, y = NMDS2, label = Forma),
+            color = "black", fontface = "italic", vjust = -0.5) +
+  scale_color_manual(values = c("T0" = "skyblue", "T1" = "tomato")) +
+  labs(title = "Ordination plot (NMDS) – Forme biologiche con vettori",
+       x = "Dimensione 1 (NMDS1)", 
+       y = "Dimensione 2 (NMDS2)") +
+  theme_minimal()
